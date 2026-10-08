@@ -14,7 +14,7 @@
     <div class="acts">
       <button class="btn" onclick="dl()">⬇ 목록 CSV</button>
       <a class="btn" href="maptree.html">🌳 조례 체계도</a>
-      <a class="btn" href="https://www.law.go.kr/ordinSc.do?menuId=3&subMenuId=27" target="_blank" rel="noopener">자치법규 검색 ↗</a>
+      <a class="btn" href="https://www.law.go.kr/ordinSc.do?menuId=3&subMenuId=27&tabMenuId=134" target="_blank" rel="noopener">자치법규 검색 ↗</a>
     </div>
   </div>
 
@@ -66,7 +66,9 @@
 <script>
 shell('ordinances.html');
 let ORD = [], DEPTS = [];
-const lawURL = n => 'https://www.law.go.kr/LSW/ordinScListR.do?query=' + encodeURIComponent('경기도 ' + n);
+// 국가법령정보센터 자치법규 검색 딥링크 (검증된 형식)
+const LAW_SC = 'https://www.law.go.kr/ordinSc.do?menuId=3&subMenuId=27&tabMenuId=134&query=';
+const lawURL = n => LAW_SC + encodeURIComponent('경기도 ' + n);
 
 (async () => {
   const O = await load('ordinances.json');

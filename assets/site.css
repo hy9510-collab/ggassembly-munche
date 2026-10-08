@@ -1,0 +1,196 @@
+/* 경기도의회 문화체육관광위원회 의정지원 시스템 */
+:root{
+  --navy:#0b3a63; --gd:#185FA5; --gm:#2e8fbf; --gl:#eef5fb; --gb:#cfe2f0;
+  --ink:#1f2937; --mut:#6b7280; --line:#e5e7eb; --bg:#f6f8fb; --wh:#fff;
+  --amber:#d97706; --red:#dc2626; --green:#16a34a; --vio:#7c3aed;
+  --shadow:0 1px 2px rgba(11,58,99,.06), 0 6px 18px -8px rgba(11,58,99,.18);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:120px}
+body{font-family:'Pretendard','Noto Sans KR','Malgun Gothic',system-ui,sans-serif;
+  color:var(--ink);background:var(--bg);line-height:1.6;font-size:14.5px;-webkit-text-size-adjust:100%}
+a{color:var(--gd);text-decoration:none}
+a:hover{text-decoration:underline}
+
+/* ── 헤더 ── */
+.topbar{background:linear-gradient(135deg,#0b3a63 0%,#14538c 55%,#1b6fa8 100%);color:#fff;position:sticky;top:0;z-index:50;
+  box-shadow:0 2px 12px rgba(6,32,58,.28)}
+.topbar-in{max-width:1240px;margin:0 auto;padding:12px 20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.crest{width:42px;height:42px;border-radius:11px;display:flex;align-items:center;justify-content:center;
+  font-size:19px;font-weight:800;background:linear-gradient(145deg,#4aa3de,#0e5c99);flex-shrink:0;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 6px 14px -6px rgba(0,0,0,.5)}
+.brand{line-height:1.25;margin-right:auto}
+.brand b{display:block;font-size:16.5px;font-weight:800;letter-spacing:-.3px}
+.brand span{font-size:11.5px;opacity:.78;letter-spacing:.02em}
+.brand a{color:#fff;text-decoration:none}
+.topbar-act{display:flex;gap:8px;align-items:center}
+.tb-btn{font-size:12px;font-weight:700;color:#dbeafe;background:rgba(255,255,255,.12);
+  border:1px solid rgba(255,255,255,.2);border-radius:8px;padding:6px 11px;cursor:pointer}
+.tb-btn:hover{background:rgba(255,255,255,.22);color:#fff;text-decoration:none}
+
+/* ── 내비게이션 ── */
+.nav{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:66px;z-index:45}
+.nav-in{max-width:1240px;margin:0 auto;padding:0 20px;display:flex;gap:2px;overflow-x:auto;scrollbar-width:thin}
+.nav-in::-webkit-scrollbar{height:4px}
+.nav-in::-webkit-scrollbar-thumb{background:var(--gb);border-radius:2px}
+.nav a{white-space:nowrap;font-size:13px;font-weight:600;color:#475569;padding:11px 12px;
+  border-bottom:3px solid transparent;text-decoration:none}
+.nav a:hover{color:var(--gd);background:var(--gl)}
+.nav a.on{color:var(--gd);border-bottom-color:var(--gd);background:var(--gl)}
+
+/* ── 레이아웃 ── */
+.wrap{max-width:1240px;margin:0 auto;padding:26px 20px 70px}
+.page-head{margin-bottom:22px}
+.page-head h1{font-size:25px;font-weight:800;color:var(--navy);letter-spacing:-.5px}
+.page-head .sub{color:var(--mut);font-size:13.5px;margin-top:5px}
+.page-head .acts{margin-top:12px;display:flex;gap:8px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:700;
+  border:1px solid var(--gb);background:#fff;color:var(--gd);border-radius:8px;padding:7px 13px;cursor:pointer}
+.btn:hover{background:var(--gl);text-decoration:none}
+.btn.primary{background:var(--gd);color:#fff;border-color:var(--gd)}
+.btn.primary:hover{background:#12508f}
+
+h2.sec{font-size:18.5px;font-weight:800;color:var(--navy);margin:38px 0 12px;
+  padding-bottom:8px;border-bottom:2px solid var(--navy)}
+h2.sec:first-of-type{margin-top:6px}
+h2.sec small{font-weight:400;font-size:12.5px;color:var(--mut);margin-left:8px}
+h3.sub{font-size:15px;font-weight:700;color:var(--ink);margin:22px 0 8px}
+
+.card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:18px 20px;box-shadow:var(--shadow)}
+.grid{display:grid;gap:14px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.g4{grid-template-columns:repeat(auto-fit,minmax(178px,1fr))}
+
+/* ── 통계 카드 ── */
+.stat{background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px 18px;box-shadow:var(--shadow);
+  border-top:3px solid var(--gd)}
+.stat .k{font-size:11.5px;font-weight:700;color:var(--mut);letter-spacing:.02em}
+.stat .v{font-size:26px;font-weight:800;color:var(--navy);letter-spacing:-1px;margin-top:3px;line-height:1.15}
+.stat .v small{font-size:14px;font-weight:700;margin-left:2px}
+.stat .d{font-size:11.5px;color:var(--mut);margin-top:5px}
+.stat.up{border-top-color:var(--green)} .stat.dn{border-top-color:var(--red)}
+.up-t{color:var(--green);font-weight:700} .dn-t{color:var(--red);font-weight:700}
+
+/* ── 표 ── */
+.tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:#fff}
+table.tbl{border-collapse:collapse;width:100%;font-size:12.8px;min-width:520px}
+table.tbl th{background:#f1f5f9;color:#334155;font-weight:700;font-size:11.8px;text-align:left;
+  padding:9px 10px;border-bottom:1px solid var(--line);white-space:nowrap;position:sticky;top:0}
+table.tbl td{padding:8px 10px;border-bottom:1px solid #f1f5f9;vertical-align:top}
+table.tbl tbody tr:last-child td{border-bottom:none}
+table.tbl tbody tr:hover{background:#f8fafc}
+table.tbl td.n,table.tbl th.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+table.tbl td.c,table.tbl th.c{text-align:center;white-space:nowrap}
+table.tbl tr.total td{background:var(--gl);font-weight:800;color:var(--navy);border-top:2px solid var(--gb)}
+
+/* ── 뱃지 ── */
+.tag{display:inline-block;font-size:10.5px;font-weight:700;border-radius:4px;padding:2px 6px;
+  white-space:nowrap;line-height:1.5}
+.tag.mo{background:var(--gd);color:#fff}
+.tag.sub{background:#fbbf24;color:#5b3a00}
+.tag.fund{background:#fef9c3;color:#854d0e}
+.tag.rule{background:#e0e7ff;color:#3730a3}
+.tag.dup{background:#fecaca;color:#991b1b}
+.tag.comp{background:#cffafe;color:#155e75}
+.tag.new{background:#dcfce7;color:#166534}
+.tag.sun{background:#f1f5f9;color:#475569}
+.tag.chg{background:#f3e8ff;color:#6b21a8}
+.tag.dem{background:#dbeafe;color:#1e40af}
+.tag.ppp{background:#fee2e2;color:#991b1b}
+.tag.grey{background:#e5e7eb;color:#374151}
+
+/* ── 바 차트 ── */
+.bars{display:flex;flex-direction:column;gap:7px}
+.bar-row{display:grid;grid-template-columns:110px 1fr 96px;gap:10px;align-items:center;font-size:12.3px}
+.bar-row .lb{text-align:right;color:#334155;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar-track{background:#eef2f7;border-radius:5px;height:20px;position:relative;overflow:hidden}
+.bar-fill{height:100%;border-radius:5px;background:linear-gradient(90deg,var(--gm),var(--gd));
+  transition:width .6s cubic-bezier(.2,.8,.2,1)}
+.bar-row .vl{font-variant-numeric:tabular-nums;color:var(--navy);font-weight:700;white-space:nowrap;font-size:11.8px}
+
+/* ── 도넛 ── */
+.donut-wrap{display:flex;gap:22px;align-items:center;flex-wrap:wrap}
+.legend{display:flex;flex-direction:column;gap:5px;font-size:12.3px;min-width:200px}
+.legend div{display:flex;align-items:center;gap:7px}
+.legend i{width:11px;height:11px;border-radius:3px;flex-shrink:0}
+.legend b{margin-left:auto;font-variant-numeric:tabular-nums;color:var(--navy)}
+
+/* ── 위원 카드 ── */
+.mcard{background:#fff;border:1px solid var(--line);border-radius:12px;padding:15px 16px;box-shadow:var(--shadow);
+  border-left:4px solid var(--gb)}
+.mcard.lead{border-left-color:var(--gd);background:linear-gradient(180deg,#f8fbfe,#fff)}
+.mcard .role{font-size:11px;font-weight:800;color:var(--gd);letter-spacing:.04em}
+.mcard .nm{font-size:19px;font-weight:800;color:var(--navy);margin:2px 0 6px;letter-spacing:-.5px}
+.mcard .meta{font-size:12.3px;color:var(--mut);display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+
+/* ── 목록/칩 ── */
+.chips{display:flex;flex-wrap:wrap;gap:5px}
+.chip{background:#f1f5f9;border:1px solid var(--line);border-radius:6px;font-size:11.8px;padding:3px 8px;color:#334155}
+.chip.dup{border-color:#fca5a5;background:#fef2f2;color:#b91c1c}
+.chip a{color:inherit}
+
+.note{background:#fffbeb;border:1px solid #fde68a;border-radius:9px;padding:11px 14px;
+  font-size:12.3px;color:#92400e;margin:14px 0}
+.lead-box{background:var(--gl);border-left:4px solid var(--gd);border-radius:0 9px 9px 0;
+  padding:12px 16px;margin:12px 0 18px;font-size:13.2px;color:#1e3a5f}
+.muted{color:var(--mut);font-size:12.3px}
+ul.tick{list-style:none;font-size:13px}
+ul.tick li{padding:4px 0 4px 18px;position:relative}
+ul.tick li:before{content:"";position:absolute;left:3px;top:12px;width:6px;height:6px;
+  border-radius:50%;background:var(--gm)}
+
+/* ── 검색 ── */
+.searchbar{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0;align-items:center}
+.searchbar input[type=search],.searchbar input[type=text]{flex:1;min-width:220px;font:inherit;font-size:13.5px;
+  border:1px solid var(--gb);border-radius:9px;padding:9px 13px;background:#fff}
+.searchbar input:focus{outline:2px solid var(--gm);outline-offset:-1px}
+.searchbar select{font:inherit;font-size:13px;border:1px solid var(--gb);border-radius:9px;padding:9px 11px;background:#fff}
+.count-badge{font-size:12.5px;color:var(--mut);font-weight:600;white-space:nowrap}
+mark{background:#fef08a;padding:0 1px;border-radius:2px}
+
+/* ── 링크 타일 ── */
+.links{display:grid;grid-template-columns:repeat(auto-fit,minmax(185px,1fr));gap:10px}
+.links a{background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px 14px;
+  display:block;box-shadow:var(--shadow);text-decoration:none}
+.links a:hover{border-color:var(--gm);transform:translateY(-2px);transition:.15s}
+.links b{display:block;font-size:13.2px;color:var(--navy);font-weight:700}
+.links span{font-size:11.5px;color:var(--mut)}
+
+/* ── 빠른 이동 ── */
+.quick{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}
+.quick a{background:linear-gradient(150deg,#fff,#f4f9fd);border:1px solid var(--gb);border-radius:12px;
+  padding:16px 17px;text-decoration:none;box-shadow:var(--shadow);display:block}
+.quick a:hover{border-color:var(--gd);box-shadow:0 10px 22px -10px rgba(11,58,99,.4);transform:translateY(-2px);transition:.15s}
+.quick .ic{font-size:21px}
+.quick b{display:block;font-size:14.5px;color:var(--navy);font-weight:800;margin-top:6px}
+.quick span{font-size:12px;color:var(--mut)}
+
+footer{border-top:1px solid var(--line);background:#fff;padding:22px 20px 34px;text-align:center;
+  font-size:12px;color:var(--mut)}
+footer b{color:var(--navy)}
+
+.empty{text-align:center;padding:34px 20px;color:var(--mut);font-size:13px}
+
+@media(max-width:640px){
+  .nav{top:60px}
+  .topbar-in{padding:9px 14px}
+  .brand b{font-size:14px} .brand span{font-size:10.5px}
+  .wrap{padding:18px 14px 50px}
+  .page-head h1{font-size:20px}
+  .bar-row{grid-template-columns:86px 1fr 78px;font-size:11.5px}
+  .stat .v{font-size:22px}
+}
+@media print{
+  .topbar,.nav,.page-head .acts,.searchbar,.btn,footer .np{display:none!important}
+  body{background:#fff;font-size:11px}
+  .card,.stat,.tbl-wrap{box-shadow:none;break-inside:avoid}
+  .wrap{max-width:none;padding:0}
+  a{color:inherit;text-decoration:none}
+}
+
+/* ── 내 컴퓨터에서만 열리는 링크(공개 주소에서 비활성) ── */
+.links a.off{opacity:.55;cursor:default;background:#f8fafc;border-style:dashed}
+.links a.off:hover{transform:none;border-color:var(--line)}
+.links a.off em{display:block;font-size:10.5px;color:var(--amber);font-style:normal;font-weight:700;margin-top:3px}
+.budget-note{background:#eff6ff;border-color:#bfdbfe;color:#1e40af}

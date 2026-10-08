@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>의원 현황 | 경기도의회 문화체육관광위원회</title>
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<div class="wrap">
+  <div class="page-head">
+    <h1>의원 현황</h1>
+    <p class="sub">제12대 경기도의회 전반기 문화체육관광위원회 위원 명단 · 출처 경기도의회 위원회 누리집</p>
+    <div class="acts">
+      <button class="btn" onclick="dl()">⬇ 명단 CSV</button>
+      <a class="btn" href="https://www.ggc.go.kr/site/cmt/home?divisionCommittee=standing&cmtCd=01&cmtNmCd=C501" target="_blank" rel="noopener">위원회 누리집 ↗</a>
+    </div>
+  </div>
+
+  <div class="grid g4" id="stats"></div>
+
+  <div class="note">
+    연락처·사무실·생년월일 등 개인정보는 이 페이지에 싣지 않았다. 필요한 항목은 경기도의회 누리집 의원 개별 페이지에서 확인하고,
+    담당 의원의 상세 프로필은 <b>의원 활동관리</b> 시스템에 등록해 관리한다.
+  </div>
+
+  <h2 class="sec">위원장단</h2>
+  <div class="grid g3" id="lead"></div>
+
+  <h2 class="sec">위원 <small id="mcount"></small></h2>
+  <div class="searchbar">
+    <input type="search" id="q" placeholder="이름·선거구 검색 (예: 오산, 전예슬)">
+    <select id="party"><option value="">전체 정당</option></select>
+    <span class="count-badge" id="cnt"></span>
+  </div>
+  <div class="grid g3" id="mem"></div>
+
+  <h2 class="sec">전체 명단</h2>
+  <div class="tbl-wrap">
+    <table class="tbl">
+      <thead><tr><th class="c">연번</th><th class="c">직위</th><th>성명</th><th>선거구</th><th>정당</th><th class="c">구분</th><th>담당 자료</th></tr></thead>
+      <tbody id="tbl"></tbody>
+    </table>
+  </div>
+
+  <h2 class="sec">담당 의원 자료실 <small>정책지원관 작성 자료</small></h2>
+  <div class="links" id="own"></div>
+</div>
+
+<script src="assets/site.js"></script>
+<script>
+shell('members.html');
+let M = [];
+// 정책지원관이 개별 자료를 만들어 둔 의원
+const OWN = {
+  '전예슬': '../의원 자료/전예슬_의원_자료/index.html',
+  '한규찬': '../의원 자료/한규찬_의원_자료/한규찬_의원_기초자료.html',
+};
+
+const pcls = p => p === '더불어민주당' ? 'dem' : (p === '국민의힘' ? 'ppp' : 'grey');
+
+(async () => {
+  const C = await load('committee.json');
+  M = C.members;
+
+  const 민주 = M.filter(m=>m.party==='더불어민주당').length;
+  const 지역구 = M.filter(m=>m.type==='지역구').length;
+  stats.innerHTML = [
+    ['총 위원', M.length+'<small>명</small>', '조례상 상임위별 17명 이내'],
+    ['위원장단', '3<small>명</small>', '위원장 1 · 부위원장 2'],
+    ['더불어민주당', 민주+'<small>명</small>', Math.round(민주/M.length*100)+'%'],
+    ['국민의힘', (M.length-민주)+'<small>명</small>', Math.round((M.length-민주)/M.length*100)+'%'],
+  ].map(([k,v,d])=>`<div class="stat"><div class="k">${k}</div><div class="v">${v}</div><div class="d">${d}</div></div>`).join('');
+
+  document.getElementById('mcount').textContent = `지역구 ${지역구}명 · 비례대표 ${M.length-지역구}명`;
+
+  lead.innerHTML = M.filter(m=>m.role!=='위원').map(card).join('');
+
+  const parties = [...new Set(M.map(m=>m.party))];
+  party.insertAdjacentHTML('beforeend', parties.map(p=>`<option>${p}</option>`).join(''));
+
+  tbl.innerHTML = M.map((m,i)=>`<tr>
+    <td class="c">${i+1}</td>
+    <td class="c">${m.role==='위원' ? '위원' : `<b style="color:var(--gd)">${m.role}</b>`}</td>
+    <td><b>${m.name}</b></td>
+    <td>${m.district}</td>
+    <td><span class="tag ${pcls(m.party)}">${m.party}</span></td>
+    <td class="c muted">${m.type}</td>
+    <td>${OWN[m.name] ? `<a href="${OWN[m.name]}">자료 열기 ↗</a>` : '<span class="muted">—</span>'}</td>
+  </tr>`).join('');
+
+  own.innerHTML = Object.entries(OWN).map(([n,u])=>{
+    const m = M.find(x=>x.name===n) || {};
+    return `<a href="${u}"><b>${n} 의원</b><span>${m.district||''} · 공약·조례·의정활동 자료</span></a>`;
+  }).join('') + `<a href="../의원 활동관리/index.html"><b>의원 활동관리</b><span>활동기록·조례·공약 통합 관리</span></a>
+   <a href="../신임의원 지원자료/index.html"><b>신임의원 브리핑</b><span>문체위 의정활동 안내</span></a>`;
+
+  render();
+  q.oninput = party.onchange = render;
+})();
+
+function card(m){
+  return `<div class="mcard ${m.role!=='위원'?'lead':''}">
+    <div class="role">${m.role}</div>
+    <div class="nm">${m.name}</div>
+    <div class="meta">
+      <span class="tag ${pcls(m.party)}">${m.party}</span>
+      <span>${m.district}</span>
+      ${OWN[m.name] ? `<a href="${OWN[m.name]}" style="margin-left:auto;font-weight:700">자료 ↗</a>` : ''}
+    </div></div>`;
+}
+
+function render(){
+  const s = q.value.trim(), p = party.value;
+  const list = M.filter(m =>
+    (!p || m.party === p) &&
+    (!s || m.name.includes(s) || m.district.includes(s) || m.role.includes(s)));
+  mem.innerHTML = list.length ? list.map(card).join('')
+    : `<div class="empty" style="grid-column:1/-1">검색 결과가 없습니다.</div>`;
+  cnt.textContent = `${list.length} / ${M.length}명`;
+}
+
+function dl(){
+  toCSV(['연번','직위','성명','선거구','정당','구분'],
+    M.map((m,i)=>[i+1,m.role,m.name,m.district,m.party,m.type]),
+    '문화체육관광위원회_위원명단.csv');
+}
+</script>
+</body>
+</html>

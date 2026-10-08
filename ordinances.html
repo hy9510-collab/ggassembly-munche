@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>조례 현황 | 경기도의회 문화체육관광위원회</title>
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<div class="wrap">
+  <div class="page-head">
+    <h1>조례 현황</h1>
+    <p class="sub">문화체육관광위원회 소관 자치법규 131건 · 2026. 7. 16. 기준 · 출처 국가법령정보센터(법제처)</p>
+    <div class="acts">
+      <button class="btn" onclick="dl()">⬇ 목록 CSV</button>
+      <a class="btn" href="maptree.html">🌳 조례 체계도</a>
+      <a class="btn" href="https://www.law.go.kr/ordinSc.do?menuId=3&subMenuId=27" target="_blank" rel="noopener">자치법규 검색 ↗</a>
+    </div>
+  </div>
+
+  <div class="grid g4" id="stats"></div>
+
+  <div class="note">
+    조례명을 누르면 <b>국가법령정보센터 자치법규 검색</b>으로 연결되어 원문·연혁을 확인할 수 있다.
+    <b>母</b>는 해당 분야 조례군을 총괄하는 기본조례, <b>準母·分野母</b>는 한 과 안에서 분야별로 기본계획·위원회를 두는 조례다.
+    <span class="tag dup">중복</span>은 다른 조례와 대상·사업이 겹쳐 통폐합·역할분담 검토가 필요한 건, <span class="tag comp">경합</span>은 타 위원회와 소관이 겹치는 건이다.
+  </div>
+
+  <h2 class="sec">과별 분포</h2>
+  <div class="grid g2">
+    <div class="card"><h3 class="sub" style="margin-top:0">과별 조례 건수</h3><div id="cbars"></div></div>
+    <div class="card"><h3 class="sub" style="margin-top:0">과별 비중</h3><div id="cdonut"></div></div>
+  </div>
+
+  <h2 class="sec">조문 통합검색 <small>조례명·과·주제군</small></h2>
+  <div class="searchbar">
+    <input type="search" id="q" placeholder="조례명 검색 (예: 체육, 관광, 예술인, 기회소득)">
+    <select id="dept"><option value="">전체 과</option></select>
+    <select id="grp"><option value="">전체 주제군</option></select>
+    <select id="kind">
+      <option value="">전체 유형</option>
+      <option value="mo">母·準母·分野母</option>
+      <option value="rule">시행규칙</option>
+      <option value="dup">중복 검토</option>
+      <option value="comp">소관 경합</option>
+    </select>
+    <span class="count-badge" id="cnt"></span>
+  </div>
+
+  <div class="tbl-wrap">
+    <table class="tbl">
+      <thead><tr>
+        <th class="c" style="width:44px">번호</th><th>조례명</th><th>과</th>
+        <th>주제군</th><th>상위 법령</th><th class="c">비고</th>
+      </tr></thead>
+      <tbody id="tbl"></tbody>
+    </table>
+  </div>
+
+  <h2 class="sec">과별 주제군 <small>母조례 중심 조례군</small></h2>
+  <div id="groups"></div>
+</div>
+
+<script src="assets/site.js"></script>
+<script>
+shell('ordinances.html');
+let ORD = [], DEPTS = [];
+const lawURL = n => 'https://www.law.go.kr/LSW/ordinScListR.do?query=' + encodeURIComponent('경기도 ' + n);
+
+(async () => {
+  const O = await load('ordinances.json');
+  ORD = O.ordinances; DEPTS = O.depts;
+
+  const 母 = ORD.filter(o=>o.role).length;
+  const 규칙 = ORD.filter(o=>o.rule).length;
+  const 중복 = ORD.filter(o=>o.dup).length;
+  stats.innerHTML = [
+    ['소관 자치법규', ORD.length+'<small>건</small>', `조례 ${ORD.length-규칙}건 · 시행규칙 ${규칙}건`],
+    ['母·準母·分野母', 母+'<small>건</small>', '분야별 기본계획·위원회 근거'],
+    ['소관 과', DEPTS.length+'<small>개 과</small>', '문화체육관광국'],
+    ['정비 검토 대상', (중복+ORD.filter(o=>o.comp).length)+'<small>건</small>',
+      `중복 ${중복}건 · 소관 경합 ${ORD.filter(o=>o.comp).length}건`],
+  ].map(([k,v,d])=>`<div class="stat"><div class="k">${k}</div><div class="v">${v}</div><div class="d">${d}</div></div>`).join('');
+
+  const byDept = DEPTS.map(d=>({lb:d.dept, v:ORD.filter(o=>o.dept===d.dept).length}))
+                      .sort((a,b)=>b.v-a.v);
+  cbars.innerHTML  = bars(byDept.map(r=>({...r, vs:r.v+'건'})));
+  cdonut.innerHTML = donut(byDept, 172);
+
+  dept.insertAdjacentHTML('beforeend', DEPTS.map(d=>`<option>${d.dept}</option>`).join(''));
+
+  groups.innerHTML = DEPTS.map(d=>`
+    <div class="card" style="margin-bottom:14px">
+      <h3 class="sub" style="margin-top:0">${d.dept}
+        <span class="muted" style="font-weight:400">· ${d.law} · ${ORD.filter(o=>o.dept===d.dept).length}건</span></h3>
+      <div class="muted" style="margin-bottom:8px"><b>母조례</b> ${
+        ORD.filter(o=>o.dept===d.dept && o.role).map(o=>`${o.no} ${o.name} <span class="tag ${o.role==='기금'?'fund':(o.role==='母'?'mo':'sub')}">${o.role}</span>`).join(' · ') || '—'}</div>
+      ${d.groups.map(g=>`
+        <div style="margin:10px 0">
+          <div style="font-size:12.5px;font-weight:700;margin-bottom:4px">${g.group}
+            <span class="tag grey">${g.ids.length}</span></div>
+          <div class="chips">${g.ids.map(n=>{
+            const o = ORD.find(x=>x.no===n);
+            return `<span class="chip ${o.dup?'dup':''}"><a href="${lawURL(o.name)}" target="_blank" rel="noopener">${n} ${o.name}</a></span>`;
+          }).join('')}</div>
+          ${g.note ? `<div class="muted" style="margin-top:4px;font-style:italic">${g.note}</div>` : ''}
+        </div>`).join('')}
+    </div>`).join('');
+
+  dept.onchange = () => { fillGroups(); render(); };
+  grp.onchange = kind.onchange = render;
+  q.oninput = render;
+
+  const pre = new URLSearchParams(location.search).get('dept');
+  if (pre && DEPTS.some(d=>d.dept===pre)) dept.value = pre;
+  fillGroups(); render();
+})();
+
+function fillGroups(){
+  const d = dept.value;
+  const gs = [...new Set(ORD.filter(o=>!d||o.dept===d).map(o=>o.group))];
+  grp.innerHTML = '<option value="">전체 주제군</option>' + gs.map(g=>`<option>${g}</option>`).join('');
+}
+
+function filtered(){
+  const s = q.value.trim(), d = dept.value, g = grp.value, k = kind.value;
+  return ORD.filter(o =>
+    (!d || o.dept === d) && (!g || o.group === g) &&
+    (!k || (k==='mo'&&o.role&&o.role!=='기금') || (k==='rule'&&o.rule) || (k==='dup'&&o.dup) || (k==='comp'&&o.comp)) &&
+    (!s || o.name.includes(s) || o.dept.includes(s) || o.group.includes(s) || String(o.no)===s));
+}
+
+function render(){
+  const s = q.value.trim(), list = filtered();
+  tbl.innerHTML = list.length ? list.map(o=>`<tr>
+    <td class="c"><b>${o.no}</b></td>
+    <td><a href="${lawURL(o.name)}" target="_blank" rel="noopener">${hl(o.name, s)}</a>
+        ${o.role ? `<span class="tag ${o.role==='기금'?'fund':(o.role==='母'?'mo':'sub')}">${o.role}</span>` : ''}
+        ${o.rule ? '<span class="tag rule">시행규칙</span>' : ''}</td>
+    <td>${hl(o.dept, s)}</td>
+    <td class="muted">${o.group}</td>
+    <td class="muted" style="font-size:11.5px">${o.law}</td>
+    <td class="c">${o.dup?'<span class="tag dup">중복</span>':''}${o.comp?'<span class="tag comp">경합</span>':''}</td>
+  </tr>`).join('') : `<tr><td colspan="6"><div class="empty">검색 결과가 없습니다.</div></td></tr>`;
+  cnt.textContent = `${list.length} / ${ORD.length}건`;
+}
+
+function dl(){
+  toCSV(['번호','조례명','과','주제군','상위 법령','구분','중복검토','소관경합'],
+    filtered().map(o=>[o.no,o.name,o.dept,o.group,o.law,o.role||(o.rule?'시행규칙':''),o.dup?'Y':'',o.comp?'Y':'']),
+    '문체위_소관조례목록.csv');
+}
+</script>
+</body>
+</html>

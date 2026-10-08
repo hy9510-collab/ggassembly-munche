@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>회기 일정 | 경기도의회 문화체육관광위원회</title>
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<div class="wrap">
+  <div class="page-head">
+    <h1>회기 일정</h1>
+    <p class="sub">2026년 연간 회기 운영 · 시기별 의정활동 준비사항</p>
+  </div>
+
+  <div class="grid g4" id="stats"></div>
+
+  <h2 class="sec">2026년 회기 운영계획</h2>
+  <div class="tbl-wrap">
+    <table class="tbl">
+      <thead><tr><th class="c">회기</th><th class="c">구분</th><th>기간</th><th class="c">일수</th><th>주요 안건</th><th class="c">상태</th></tr></thead>
+      <tbody id="sched"></tbody>
+    </table>
+  </div>
+  <p class="muted" style="margin-top:8px">※ 회기 일정은 의회운영위원회가 확정하는 연간 회기 운영계획에 따르며 변경될 수 있다.</p>
+
+  <h2 class="sec">시기별 의정활동 흐름 <small>연간 사이클</small></h2>
+  <div class="tbl-wrap">
+    <table class="tbl">
+      <thead><tr><th style="width:96px">시기</th><th>주요 일정</th><th>정책지원관 준비사항</th></tr></thead>
+      <tbody>
+        <tr><td><b>1~2월</b></td><td>임시회 · 업무보고</td><td>신년 업무보고 질의 준비, 연간 의정활동 계획 수립, 소관 기관 주요사업 파악</td></tr>
+        <tr><td><b>3~5월</b></td><td>임시회 · 추경예산 심사</td><td>조례 발의 준비, 5분 자유발언 소재 정리, 정책토론회 기획</td></tr>
+        <tr><td><b>6월</b></td><td>제1차 정례회 · 결산</td><td>전년도 결산 심사자료 분석, 불용액·이월액 점검, 도정질문 준비</td></tr>
+        <tr><td><b>7~8월</b></td><td>임시회 · 의원연구단체</td><td>현장방문, 정책연구 착수, <b>행정사무감사 자료요구 항목 사전 설계</b></td></tr>
+        <tr><td><b>9~10월</b></td><td>임시회 · 행감 자료요구</td><td>자료요구서 제출(감사 전 확보), 지난해 지적사항 처리결과 대조</td></tr>
+        <tr><td><b>11월</b></td><td>제2차 정례회 · 행정사무감사</td><td>기관별 감사 질의서 작성, 발언카드·보도자료 당일 정리</td></tr>
+        <tr><td><b>11~12월</b></td><td>제2차 정례회 · 예산안 심사</td><td>내년도 본예산 분석, 계수조정 대비 증·감액 의견 정리</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 class="sec">의정활동 주요 수단</h2>
+  <div class="grid g2">
+    <div class="card">
+      <h3 class="sub" style="margin-top:0">본회의 · 도정 차원</h3>
+      <ul class="tick">
+        <li><b>5분 자유발언</b> — 도정 현안 자유발언 · 의제 제한 없음 · 사전 신청제</li>
+        <li><b>도정질문</b> — 도지사·교육감 대상 · 일괄질문 또는 일문일답 선택</li>
+        <li><b>긴급현안질문</b> — 회기 중 긴급한 현안에 대한 질문</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3 class="sub" style="margin-top:0">위원회 차원</h3>
+      <ul class="tick">
+        <li><b>조례 발의</b> — 소정 인원 이상 찬성(연서) · 입법예고·비용추계 절차</li>
+        <li><b>자료 요구</b> — 집행부·산하기관 서면 요구 · 상시 가능</li>
+        <li><b>행정사무감사</b> — 연 1회 · 시정요구·건의사항 처리결과 보고 의무</li>
+        <li><b>예산·결산 심사</b> — 상임위 예비심사 후 예결특위 종합심사</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2 class="sec">회의록 · 영상</h2>
+  <div class="links">
+    <a href="https://kms.ggc.go.kr" target="_blank" rel="noopener"><b>경기도의회 회의록시스템</b><span>본회의·상임위 회의록 검색</span></a>
+    <a href="https://www.ggc.go.kr/site/cmt/home?divisionCommittee=standing&cmtCd=01&cmtNmCd=C501" target="_blank" rel="noopener"><b>문화체육관광위원회</b><span>의사일정·회의 안내</span></a>
+    <a href="../회의 발언카드 보도자료 비서/index.html"><b>발언카드·보도자료 비서</b><span>회의 영상·회의록 → 발언카드 자동 생성</span></a>
+    <a href="../의원 활동관리/index.html"><b>의원 활동관리</b><span>활동기록·조례·공약 집계</span></a>
+  </div>
+</div>
+
+<script src="assets/site.js"></script>
+<script>
+shell('schedule.html');
+(async () => {
+  const C = await load('committee.json');
+  const days = C.schedule.reduce((s,x)=>s+x.days,0);
+  const 정례 = C.schedule.filter(s=>s.type==='정례회');
+  const today = new Date();
+
+  stats.innerHTML = [
+    ['연간 회기', C.schedule.length+'<small>회</small>', `정례회 ${정례.length} · 임시회 ${C.schedule.length-정례.length}`],
+    ['총 회기일수', days+'<small>일</small>', '2026년 회기 운영계획 기준'],
+    ['정례회', 정례.reduce((s,x)=>s+x.days,0)+'<small>일</small>', '결산 · 행정사무감사 · 본예산'],
+    ['행정사무감사', '14<small>일</small>', '제394회 정례회 중 · 「지방자치법」 제49조'],
+  ].map(([k,v,d])=>`<div class="stat"><div class="k">${k}</div><div class="v">${v}</div><div class="d">${d}</div></div>`).join('');
+
+  // 기간 문자열에서 마지막 날짜를 뽑아 진행 상태 표시
+  sched.innerHTML = C.schedule.map(s=>{
+    const m = [...s.period.matchAll(/(\d+)\.\s*(\d+)\./g)];
+    let state = '<span class="tag grey">예정</span>';
+    if (m.length) {
+      const st = new Date(2026, +m[0][1]-1, +m[0][2]);
+      const en = new Date(2026, +m[m.length-1][1]-1, +m[m.length-1][2], 23, 59);
+      if (today > en) state = '<span class="tag sun">종료</span>';
+      else if (today >= st) state = '<span class="tag new">진행 중</span>';
+    }
+    return `<tr>
+      <td class="c"><b>${s.n}</b></td>
+      <td class="c"><span class="tag ${s.type==='정례회'?'mo':'grey'}">${s.type}</span></td>
+      <td>${s.period}</td><td class="c">${s.days}일</td>
+      <td class="muted">${s.note}</td><td class="c">${state}</td></tr>`;
+  }).join('');
+})();
+</script>
+</body>
+</html>

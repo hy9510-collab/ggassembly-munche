@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>행정사무감사 | 경기도의회 문화체육관광위원회</title>
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<div class="wrap">
+  <div class="page-head">
+    <h1>행정사무감사</h1>
+    <p class="sub">소관 기관 감사 준비 · 자료요구 · 지적사항 관리</p>
+  </div>
+
+  <div class="lead-box">
+    행정사무감사는 「지방자치법」 제49조에 따라 <b>매년 1회 14일 이내</b>로 실시한다.
+    감사 결과 시정요구·건의사항에 대해 집행부는 <b>처리결과를 보고할 의무</b>가 있으므로,
+    전년도 지적사항의 이행 여부를 대조하는 것이 다음 해 감사의 출발점이다.
+  </div>
+
+  <p style="margin:-6px 0 16px"><a class="btn primary" href="../행정사무감사/index.html">🗂 2026 행정사무감사 준비 페이지 (기관별 현황·매일 언론보도·2025 지적사항)</a></p>
+
+  <div class="grid g4" id="stats"></div>
+
+  <h2 class="sec">감사 대상 기관 <small>소관 실·국 및 산하기관</small></h2>
+  <div class="tbl-wrap">
+    <table class="tbl">
+      <thead><tr id="tgthead"></tr></thead>
+      <tbody id="tgt"></tbody>
+    </table>
+  </div>
+
+  <h2 class="sec">감사 준비 체크리스트</h2>
+  <div class="grid g2">
+    <div class="card">
+      <h3 class="sub" style="margin-top:0">① 감사 전 (9~10월)</h3>
+      <ul class="tick">
+        <li>전년도 <b>지적사항 처리결과보고서</b> 확보 → 미이행·형식이행 건 추출</li>
+        <li>소관 기관별 <b>자료요구 목록</b> 작성 (감사 개시 전 제출 필수)</li>
+        <li>결산 검사의견서·감사원 감사결과·도 감사관실 지적사항 교차 확인</li>
+        <li>보조금·출연금 <b>집행률과 정산결과</b> 확인 (불용·이월 과다 사업)</li>
+        <li>언론 보도·민원·국정감사 지적 중 소관 사항 정리</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3 class="sub" style="margin-top:0">② 감사 중 (11월)</h3>
+      <ul class="tick">
+        <li>기관별 질의서 작성 · 답변 대비 <b>추가 요구자료</b> 준비</li>
+        <li>발언은 당일 <b>발언카드·보도자료 초안</b>으로 정리</li>
+        <li>답변이 불충분한 건은 <b>서면답변 요구</b>로 남겨 기록</li>
+        <li>시정요구 / 처리요구 / 건의 구분을 명확히 하여 지적사항 정리</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3 class="sub" style="margin-top:0">③ 감사 후 (12월~)</h3>
+      <ul class="tick">
+        <li>감사결과보고서 채택 · 본회의 의결</li>
+        <li>지적사항을 <b>예산심사 증·감액 의견</b>과 연계</li>
+        <li>제도 개선이 필요한 건은 <b>조례 제·개정 과제</b>로 전환</li>
+        <li>처리결과 회신 기한 관리 → 다음 해 감사 자료로 이월</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3 class="sub" style="margin-top:0">문체위 상시 점검 포인트</h3>
+      <ul class="tick">
+        <li><b>출연기관 운영</b> — 경기문화재단·아트센터·콘텐츠진흥원·관광공사·도자재단의 출연금 집행과 자체수입</li>
+        <li><b>체육단체 보조금</b> — 경기도체육회·장애인체육회 보조금 정산, 종목단체 지원 기준</li>
+        <li><b>기회소득</b> — 예술인(39)·체육인(81) 기회소득 지급 실적과 대상자 선정</li>
+        <li><b>축제·행사</b> — 지역축제(129)·작은축제(130) 중복 지원 여부, 성과평가</li>
+        <li><b>시설 건립·위탁</b> — 체육시설·문화시설 건립 공정과 위탁운영 성과</li>
+        <li><b>전국체전</b> — 추진단 예산 순증 대비 준비 상황</li>
+      </ul>
+    </div>
+  </div>
+
+  <div id="chgSec">
+  <h2 class="sec">예산 급변 사업 <small>감사·심사 질의 후보 · 증감률 기준</small></h2>
+  <div class="searchbar">
+    <select id="dir">
+      <option value="up">증액 큰 순</option>
+      <option value="dn">감액 큰 순</option>
+    </select>
+    <select id="min">
+      <option value="100000">1억원 이상 사업</option>
+      <option value="1000000">10억원 이상 사업</option>
+      <option value="0">전체</option>
+    </select>
+    <span class="count-badge" id="cnt"></span>
+  </div>
+  <div class="tbl-wrap">
+    <table class="tbl">
+      <thead><tr><th>과·기관</th><th>세부사업명</th><th class="n">2026(A)</th>
+        <th class="n">2025(B)</th><th class="n">증감액</th><th class="n">증감률</th><th class="c">구분</th></tr></thead>
+      <tbody id="chg"></tbody>
+    </table>
+  </div>
+  </div>
+
+  <div class="note">
+    <b>2025년도 행정사무감사 지적사항 167건</b>(처리결과 포함)과 기관별 언론보도는
+    <a href="../행정사무감사/index.html">2026 행정사무감사 준비 페이지</a>에 기관·부서별로 정리되어 있다.
+  </div>
+</div>
+
+<script src="assets/site.js"></script>
+<script>
+shell('audit.html');
+let P = [];
+(async () => {
+  const B = await loadBudget();
+  const C = await load('committee.json');
+  const O = await load('ordinances.json');
+  P = B ? B.projects : [];
+
+  const ordBy = {}; O.ordinances.forEach(o=>ordBy[o.dept]=(ordBy[o.dept]||0)+1);
+  const cntBy = {}; P.forEach(p=>cntBy[p.dept]=(cntBy[p.dept]||0)+1);
+  const H = B ? '<th class="n">2026 세출(천원)</th><th class="c">세출 사업</th>' : '';
+  document.getElementById('tgthead').innerHTML =
+    `<th class="c">연번</th><th>감사 대상</th><th class="c">구분</th><th class="c">소관 조례</th>${H}`;
+
+  const nd = C.depts.length;
+  const sc = [
+    ['감사 기간', '14<small>일 이내</small>', '연 1회 · 제2차 정례회 중'],
+    ['감사 대상', (nd + C.agencies.length-1)+'<small>개</small>', `실·국 ${nd} · 산하기관 ${C.agencies.length-1}`],
+    ['근거', '제49<small>조</small>', '「지방자치법」 행정사무 감사·조사'],
+  ];
+  if (B) sc.push(['소관 세출예산', eokS(B.total.seul.y2026)+'<small>억원</small>', '2026년 본예산(안)']);
+  else   sc.push(['소관 자치법규', O.ordinances.length+'<small>건</small>', '과별 조례 체계']);
+  stats.innerHTML = sc.map(([k,v,d])=>`<div class="stat"><div class="k">${k}</div><div class="v">${v}</div><div class="d">${d}</div></div>`).join('');
+
+  let i = 0;
+  tgt.innerHTML = C.depts.map(d=>{
+      const r = B ? (B.seul.find(x=>x.name===d.name) || {}) : {};
+      return `<tr>
+      <td class="c">${++i}</td><td><b>${d.name}</b></td>
+      <td class="c"><span class="tag grey">실·국</span></td>
+      <td class="c">${ordBy[d.name]?`<a href="ordinances.html?dept=${encodeURIComponent(d.name)}">${ordBy[d.name]}</a>`:'—'}</td>
+      ${B ? `<td class="n">${r.y2026?fmt(r.y2026):'—'}</td><td class="c">${cntBy[d.name]||0}</td>` : ''}</tr>`;
+    }).join('')
+    + C.agencies.filter(a=>a.cat!=='도 실·국').map(a=>`<tr>
+      <td class="c">${++i}</td><td><b>${a.name}</b></td>
+      <td class="c"><span class="tag ${a.cat==='체육단체'?'sub':'mo'}">${a.cat}</span></td>
+      <td class="c muted">—</td>
+      ${B ? '<td class="n muted">출연금·보조금</td><td class="c muted">—</td>' : ''}</tr>`).join('');
+
+  if (!B) { document.getElementById('chgSec').innerHTML = BUDGET_NOTE; return; }
+  dir.onchange = min.onchange = render;
+  render();
+})();
+
+function render(){
+  const mn = +min.value;
+  let list = P.filter(p => p.b > 0 && p.a > 0 && (p.a >= mn || p.b >= mn));
+  list = list.map(p=>({...p, pct:(p.a-p.b)/p.b*100}));
+  list.sort((a,b)=> dir.value==='up' ? b.pct-a.pct : a.pct-b.pct);
+  list = list.slice(0,40);
+  chg.innerHTML = list.map(p=>{
+    const d = delta(p.a,p.b);
+    return `<tr><td class="muted">${p.dept}</td><td><b>${p.name}</b></td>
+      <td class="n">${fmt(p.a)}</td><td class="n muted">${fmt(p.b)}</td>
+      <td class="n ${d.cls}">${p.a>=p.b?'+':''}${fmt(p.a-p.b)}</td>
+      <td class="n ${d.cls}">${d.t}</td>
+      <td class="c">${p.tag?`<span class="tag ${p.tag.startsWith('신규')?'new':p.tag.startsWith('일몰')?'sun':'chg'}">${p.tag}</span>`:''}</td></tr>`;
+  }).join('');
+  cnt.textContent = `상위 ${list.length}건 표시`;
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>종합 현황 | 경기도의회 문화체육관광위원회</title>
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<div class="wrap">
+  <div class="page-head">
+    <h1>종합 현황</h1>
+    <p class="sub" id="subline">제12대 경기도의회 전반기 문화체육관광위원회 · 위원 15명 · 소관 자치법규 131건</p>
+  </div>
+
+  <div class="grid g3" id="stats"></div>
+
+  <h2 class="sec">⚡ 바로가기</h2>
+  <div class="quick" id="quick"></div>
+
+  <div id="budgetArea">
+    <h2 class="sec">소관 실·국 및 예산 <small>2026년도 본예산(안) · 단위 천원</small></h2>
+    <div class="grid g2">
+      <div class="card">
+        <h3 class="sub" style="margin-top:0">과·기관별 세출 비중</h3>
+        <div id="donut"></div>
+      </div>
+      <div class="card">
+        <h3 class="sub" style="margin-top:0">과·기관별 세출예산 <span class="muted">(단위 억원)</span></h3>
+        <div id="deptbars"></div>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="sec" id="deptHead">소관 실·국 현황</h2>
+  <div class="tbl-wrap">
+    <table class="tbl">
+      <thead><tr id="depthead"></tr></thead>
+      <tbody id="depttbl"></tbody>
+    </table>
+  </div>
+  <p class="muted" style="margin-top:8px" id="deptnote"></p>
+
+  <h2 class="sec">2026년 회기 운영 <small>연간 7회 · 117일</small></h2>
+  <div class="tbl-wrap">
+    <table class="tbl">
+      <thead><tr><th class="c">회기</th><th class="c">구분</th><th>기간</th><th class="c">일수</th><th>주요 안건</th></tr></thead>
+      <tbody id="sched"></tbody>
+    </table>
+  </div>
+
+  <h2 class="sec">소관 기관 <small>도 실·국 및 산하 공공기관</small></h2>
+  <div class="grid g2" id="agencies"></div>
+
+  <h2 class="sec">🔗 바로가기</h2>
+  <div class="links" id="links"></div>
+</div>
+
+<script src="assets/site.js"></script>
+<script>
+shell('index.html');
+(async () => {
+  const C = await load('committee.json');
+  const O = await load('ordinances.json');
+  const B = await loadBudget();          // 없으면 null (공개 주소)
+
+  const 지역구 = C.members.filter(m=>m.type==='지역구').length;
+  const 민주 = C.members.filter(m=>m.party==='더불어민주당').length;
+  const 母 = O.ordinances.filter(o=>['母','分野母','準母'].includes(o.role)).length;
+  const 규칙 = O.ordinances.filter(o=>o.rule).length;
+  const 중복 = O.ordinances.filter(o=>o.dup).length;
+
+  const cards = [
+    ['위원 구성', C.members.length+'<small>명</small>',
+      `위원장 1 · 부위원장 2 · 위원 ${C.members.length-3} <br>더불어민주당 ${민주} · 국민의힘 ${C.members.length-민주} · 지역구 ${지역구} · 비례 ${C.members.length-지역구}`, ''],
+    ['소관 자치법규', O.ordinances.length+'<small>건</small>',
+      `母·分野母·準母 ${母}건 · 시행규칙 ${규칙}건 <br>중복·통폐합 검토 대상 ${중복}건`, ''],
+    ['소관 과·기관', C.depts.length+'<small>개</small>',
+      '문화체육관광국 7개 과 + 전국체전추진단 + 남한산성세계유산센터', ''],
+    ['소관 기관', C.agencies.length+'<small>개</small>',
+      '도 실·국 1 · 공사 1 · 출자·출연 5 · 체육단체 2 · 기타 2', ''],
+  ];
+
+  if (B) {
+    const t = B.total.seul, d = delta(t.y2026, t.y2025);
+    document.getElementById('subline').textContent +=
+      ` · 2026년 본예산(안) ${eokS(t.y2026)}억원`;
+    cards.splice(2, 0,
+      ['2026년 세출예산(안)', eokS(t.y2026)+'<small>억원</small>',
+        `<span class="${d.cls}">${d.t}</span> · 전년 ${eokS(t.y2025)}억원 (${fmt(t.y2026-t.y2025)}천원)`, d.pct>=0?'up':'dn'],
+      ['재원 구성', Math.round(t.jache/t.y2026*100)+'<small>%</small>',
+        `자체재원 ${eokS(t.jache)}억원 · 의존재원 ${eokS(t.uijon)}억원`, '']);
+    cards.push(['세출 사업 수', fmt(B.projects.length)+'<small>건</small>',
+      `신규 ${B.projects.filter(p=>p.tag.startsWith('신규')).length}건 · 일몰 ${B.projects.filter(p=>p.tag.startsWith('일몰')).length}건 · 사업명변경 ${B.projects.filter(p=>p.tag==='사업명변경').length}건`, '']);
+  }
+
+  stats.innerHTML = cards.map(([k,v,dd,cls])=>
+    `<div class="stat ${cls}"><div class="k">${k}</div><div class="v">${v}</div><div class="d">${dd}</div></div>`).join('');
+
+  // 바로가기 타일
+  quick.innerHTML = [
+    ['ordinances.html','📚','조례 현황',`소관 자치법규 ${O.ordinances.length}건 · 과별·주제군 통합검색`],
+    ['maptree.html','🌳','조례 체계도','母조례 ↔ 개별조례 주제군 관계도'],
+    ['members.html','👤','의원 현황',`위원 ${C.members.length}명 · 위원장 1 · 부위원장 2`],
+    B ? ['budget.html','💰','예산안 자료',`2026년 본예산(안) 세출 ${B.projects.length}개 사업 색인`]
+      : [HAENG_URL,'🗂','행감 준비','기관별 현황 · 언론보도 · 2025 지적사항'],
+  ].map(([h,i,t,d])=>`<a href="${h}"><div class="ic">${i}</div><b>${t}</b><span>${d}</span></a>`).join('');
+
+  const ordBy = {};
+  O.ordinances.forEach(o => ordBy[o.dept] = (ordBy[o.dept]||0)+1);
+
+  if (B) {
+    const rows = [...B.seul].sort((a,b)=>b.y2026-a.y2026);
+    document.getElementById('donut').innerHTML = donut(rows.map(r=>({lb:r.name, v:r.y2026})), 176);
+    document.getElementById('deptbars').innerHTML =
+      bars(rows.map(r=>({lb:r.name, v:r.y2026, vs:eokS(r.y2026)+'억'})));
+
+    document.getElementById('deptHead').innerHTML =
+      '소관 실·국 및 예산 <small>2026년도 본예산(안) · 단위 천원</small>';
+    depthead.innerHTML = `<th>과·기관</th><th>주요 소관 분야</th><th class="c">소관 조례</th>
+      <th class="n">2026년 본예산(안)</th><th class="n">2025년 본예산</th><th class="n">전년 대비</th>`;
+    const t = B.total.seul, d = delta(t.y2026, t.y2025);
+    depttbl.innerHTML = rows.map(r=>{
+      const meta = C.depts.find(x=>x.name===r.name) || {};
+      const dd = delta(r.y2026, r.y2025);
+      return `<tr>
+        <td><b>${r.name}</b></td>
+        <td class="muted">${meta.field||'—'}</td>
+        <td class="c">${ordBy[r.name] ? `<a href="ordinances.html?dept=${encodeURIComponent(r.name)}">${ordBy[r.name]}건</a>` : '—'}</td>
+        <td class="n">${fmt(r.y2026)}</td>
+        <td class="n">${fmt(r.y2025)}</td>
+        <td class="n ${dd.cls}">${dd.t}</td></tr>`;
+    }).join('') + `<tr class="total">
+        <td>문화체육관광국 계</td><td></td>
+        <td class="c">${O.ordinances.length}건</td>
+        <td class="n">${fmt(t.y2026)}</td><td class="n">${fmt(t.y2025)}</td>
+        <td class="n ${d.cls}">${d.t}</td></tr>`;
+    deptnote.innerHTML = '※ 예산액 단위는 천원. 조례 건수는 2026. 7. 16. 기준 문체위 소관 자치법규 131건 기준이며, 전국체전추진단·남한산성세계유산센터는 소관 과의 조례 체계에 포함되어 별도 집계하지 않았다.';
+  } else {
+    budgetArea.innerHTML = BUDGET_NOTE;
+    depthead.innerHTML = `<th>과·기관</th><th>주요 소관 분야</th><th>중심 母조례</th><th class="c">소관 조례</th>`;
+    depttbl.innerHTML = C.depts.map(d=>`<tr>
+        <td><b>${d.name}</b></td>
+        <td class="muted">${d.field}</td>
+        <td class="muted" style="font-size:11.5px">${d.mother || '—'}</td>
+        <td class="c">${ordBy[d.name] ? `<a href="ordinances.html?dept=${encodeURIComponent(d.name)}">${ordBy[d.name]}건</a>` : '—'}</td></tr>`).join('')
+      + `<tr class="total"><td>계</td><td></td><td></td><td class="c">${O.ordinances.length}건</td></tr>`;
+    deptnote.innerHTML = '※ 조례 건수는 2026. 7. 16. 기준 문체위 소관 자치법규 131건 기준이며, 전국체전추진단·남한산성세계유산센터는 소관 과의 조례 체계에 포함되어 별도 집계하지 않았다.';
+  }
+
+  sched.innerHTML = C.schedule.map(s=>`<tr>
+    <td class="c"><b>${s.n}</b></td>
+    <td class="c"><span class="tag ${s.type==='정례회'?'mo':'grey'}">${s.type}</span></td>
+    <td>${s.period}</td><td class="c">${s.days}일</td>
+    <td class="muted">${s.note}</td></tr>`).join('');
+
+  const cats = [...new Set(C.agencies.map(a=>a.cat))];
+  agencies.innerHTML = cats.map(c=>`<div class="card">
+    <h3 class="sub" style="margin-top:0">${c}</h3>
+    <ul class="tick">${C.agencies.filter(a=>a.cat===c).map(a=>
+      `<li><b>${a.name}</b><br><span class="muted">${a.note}</span></li>`).join('')}</ul></div>`).join('');
+
+  links.innerHTML = C.links.map(l=>
+    `<a href="${l.u}" target="_blank" rel="noopener"><b>${l.t}</b><span>${l.d}</span></a>`).join('');
+})();
+</script>
+</body>
+</html>

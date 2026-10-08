@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>소관 실국·기관 | 경기도의회 문화체육관광위원회</title>
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<div class="wrap">
+  <div class="page-head">
+    <h1>소관 실국·기관</h1>
+    <p class="sub">문화체육관광국 7개 과 + 전국체전추진단 + 남한산성세계유산센터 · 산하 공공기관 10개</p>
+    <div class="acts"><button class="btn" onclick="dl()">⬇ 소관기관 CSV</button></div>
+  </div>
+
+  <div class="grid g4" id="stats"></div>
+
+  <h2 class="sec">문화체육관광국 과·기관 <small>조례 · 예산 연계</small></h2>
+  <div class="grid g2" id="cards"></div>
+
+  <h2 class="sec">산하 공공기관 <small>출자·출연기관 · 공사 · 체육단체</small></h2>
+  <div class="tbl-wrap">
+    <table class="tbl">
+      <thead><tr><th class="c">구분</th><th>기관명</th><th>소관 과</th><th>설립·지원 근거 조례</th></tr></thead>
+      <tbody id="ag"></tbody>
+    </table>
+  </div>
+  <p class="muted" style="margin-top:8px">※ 산하기관 예산은 소관 과의 <b>출연금·위탁사업비</b>로 편성된다.</p>
+
+  <div id="fundSec">
+    <h2 class="sec">기관별 출연금·위탁사업비 <small>2026년 본예산(안) · 단위 천원</small></h2>
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <thead><tr><th>과·기관</th><th>세부사업명</th><th>통계목</th>
+          <th class="n">2026(A)</th><th class="n">2025(B)</th><th class="n">증감률</th></tr></thead>
+        <tbody id="funds"></tbody>
+      </table>
+    </div>
+    <p class="muted" style="margin-top:8px" id="fnote"></p>
+  </div>
+
+  <h2 class="sec">간부 명단 <small>업무보고·행정사무감사 대응</small></h2>
+  <div class="note">
+    국장·과장 등 집행부 간부 명단은 원 구성·조직개편에 따라 수시로 바뀌므로 이 페이지에 고정해 두지 않았다.
+    <b>업무보고 자료의 간부 명단</b>을 받으면 이 항목에 반영하겠다. (필요 자료 : 문화체육관광국 업무보고 자료 또는 간부 현황표)
+  </div>
+</div>
+
+<script src="assets/site.js"></script>
+<script>
+shell('executives.html');
+let AG = [];
+const DEPT_OF = {
+  '경기관광공사':'관광산업과', '경기문화재단':'문화정책과', '경기아트센터':'예술정책과',
+  '경기콘텐츠진흥원':'콘텐츠산업과', '한국도자재단':'문화유산과',
+  '경기도수원월드컵경기장관리재단':'체육진흥과', '경기도체육회':'체육진흥과',
+  '경기도장애인체육회':'체육진흥과', '(사)DMZ국제다큐멘터리영화제':'콘텐츠산업과',
+  '경기도남한산성세계유산센터':'문화유산과',
+};
+
+(async () => {
+  const C = await load('committee.json');
+  const B = await loadBudget();
+  const O = await load('ordinances.json');
+  AG = C.agencies;
+
+  const ordBy = {};
+  O.ordinances.forEach(o => ordBy[o.dept] = (ordBy[o.dept]||0)+1);
+  const cntBy = {};
+  if (B) B.projects.forEach(p => cntBy[p.dept] = (cntBy[p.dept]||0)+1);
+
+  const sc = [
+    ['소관 과·기관', C.depts.length+'<small>개</small>', '문화체육관광국'],
+    ['산하 공공기관', (AG.length-1)+'<small>개</small>', '공사 1 · 출연 5 · 체육단체 2 · 기타 2'],
+    ['소관 자치법규', O.ordinances.length+'<small>건</small>', '과별 조례 체계'],
+  ];
+  if (B) sc.push(
+    ['세출 사업', fmt(B.projects.length)+'<small>건</small>', '2026년 본예산(안)'],
+    ['세출예산(안)', eokS(B.total.seul.y2026)+'<small>억원</small>', fmt(B.total.seul.y2026)+'천원']);
+  stats.innerHTML = sc.map(([k,v,d])=>`<div class="stat"><div class="k">${k}</div><div class="v">${v}</div><div class="d">${d}</div></div>`).join('');
+
+  cards.innerHTML = C.depts.map(d=>{
+    const b = B ? (B.seul.find(x=>x.name===d.name) || {}) : {};
+    const dd = b.y2026 ? delta(b.y2026, b.y2025) : null;
+    const ags = AG.filter(a => DEPT_OF[a.name] === d.name);
+    return `<div class="card">
+      <h3 class="sub" style="margin-top:0">${d.name}</h3>
+      <div class="muted" style="margin-bottom:8px">${d.field}</div>
+      <div class="grid g3" style="gap:8px;margin-bottom:10px">
+        <div><div class="k muted" style="font-size:11px">소관 조례</div>
+          <div style="font-weight:800;color:var(--navy)">${ordBy[d.name] ? `<a href="ordinances.html?dept=${encodeURIComponent(d.name)}">${ordBy[d.name]}건</a>` : '—'}</div></div>
+        ${B ? `<div><div class="k muted" style="font-size:11px">세출 사업</div>
+          <div style="font-weight:800;color:var(--navy)">${cntBy[d.name]||0}건</div></div>
+        <div><div class="k muted" style="font-size:11px">2026 세출</div>
+          <div style="font-weight:800;color:var(--navy)">${b.y2026?eokS(b.y2026)+'억':'—'}
+            ${dd?`<span class="${dd.cls}" style="font-size:11px">${dd.t}</span>`:''}</div></div>` : ''}
+      </div>
+      ${d.mother ? `<div class="muted" style="font-size:11.5px"><b>母조례</b> ${d.mother}</div>` : ''}
+      ${ags.length ? `<div style="margin-top:8px"><span class="muted" style="font-size:11.5px"><b>산하기관</b></span>
+        <div class="chips" style="margin-top:4px">${ags.map(a=>`<span class="chip">${a.name}</span>`).join('')}</div></div>` : ''}
+    </div>`;
+  }).join('');
+
+  ag.innerHTML = AG.filter(a=>a.cat!=='도 실·국').map(a=>`<tr>
+    <td class="c"><span class="tag grey">${a.cat}</span></td>
+    <td><b>${a.name}</b></td>
+    <td>${DEPT_OF[a.name] || '—'}</td>
+    <td class="muted">${a.note.split('·').slice(1).join('·').trim() || '—'}</td></tr>`).join('');
+
+  if (!B) {   // 공개 주소 — 출연금 표 영역 제거
+    document.getElementById('fundSec').innerHTML = BUDGET_NOTE;
+    return;
+  }
+  // 출연금·위탁 성격 사업
+  const KEY = ['출연금','위탁','법정운영비','대행사업비'];
+  const f = B.projects.filter(p => KEY.some(k=>p.mok.includes(k)) && p.a > 0)
+                      .sort((a,b)=>b.a-a.a);
+  funds.innerHTML = f.slice(0,60).map(p=>{
+    const dd = p.b ? delta(p.a,p.b) : {t:'순증',cls:'up-t'};
+    return `<tr><td class="muted">${p.dept}</td><td><b>${p.name}</b></td>
+      <td class="muted" style="font-size:11.5px">${p.mok}</td>
+      <td class="n">${fmt(p.a)}</td><td class="n muted">${fmt(p.b)}</td>
+      <td class="n ${dd.cls}">${dd.t}</td></tr>`;
+  }).join('');
+  fnote.textContent = `출연금·위탁사업비 성격 사업 ${f.length}건 중 예산액 상위 60건. 합계 ${fmt(f.reduce((s,p)=>s+p.a,0))}천원 (${eokS(f.reduce((s,p)=>s+p.a,0))}억원). 전체 목록은 예산안 자료에서 검색·내려받기 할 수 있다.`;
+})();
+
+function dl(){
+  toCSV(['구분','기관명','소관 과','비고'],
+    AG.map(a=>[a.cat,a.name,DEPT_OF[a.name]||'',a.note]),
+    '문체위_소관기관.csv');
+}
+</script>
+</body>
+</html>

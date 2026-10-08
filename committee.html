@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>상임위원회 현황 | 경기도의회 문화체육관광위원회</title>
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<div class="wrap">
+  <div class="page-head">
+    <h1>상임위원회 현황</h1>
+    <p class="sub">제12대 경기도의회 전반기 · 소관 사무 · 권한 · 운영 · 조직</p>
+  </div>
+
+  <div class="lead-box">
+    문화체육관광위원회는 문화·예술, 체육, 관광, 콘텐츠 산업, 문화유산 분야의 조례안·예산안·결산을 심사·의결하고,
+    소관 실·국 및 산하기관에 대한 행정사무감사와 청원 심사를 담당한다.
+    위원은 <b>위원장 1명, 부위원장 2명을 포함해 조례상 17명 이내</b>로 구성하며, 임기는 <b>선임된 날부터 2년</b>(전·후반기 각 2년)이다.
+  </div>
+
+  <div class="grid g4" id="stats"></div>
+
+  <h2 class="sec">소관 사무</h2>
+  <div class="grid g2">
+    <div class="card">
+      <h3 class="sub" style="margin-top:0">분야별 소관</h3>
+      <ul class="tick" id="fields"></ul>
+    </div>
+    <div class="card">
+      <h3 class="sub" style="margin-top:0">소관 기관</h3>
+      <ul class="tick" id="agencies"></ul>
+    </div>
+  </div>
+
+  <h2 class="sec">위원회의 권한 <small>「지방자치법」 등 근거</small></h2>
+  <div class="tbl-wrap">
+    <table class="tbl">
+      <thead><tr><th style="width:34%">권한</th><th>근거</th></tr></thead>
+      <tbody id="powers"></tbody>
+    </table>
+  </div>
+
+  <h2 class="sec">회의 운영</h2>
+  <div class="grid g2">
+    <div class="card">
+      <h3 class="sub" style="margin-top:0">의사 정족수·의결 정족수</h3>
+      <ul class="tick">
+        <li><b>개의</b> — 재적위원 <b>3분의 1 이상</b> 출석</li>
+        <li><b>의결</b> — 재적위원 과반수 출석과 <b>출석위원 과반수</b> 찬성</li>
+        <li>가부동수인 경우 부결된 것으로 본다</li>
+        <li>위원장이 표결에 참가하며, 위원장 유고 시 부위원장이 직무 대행</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3 class="sub" style="margin-top:0">안건 처리 절차</h3>
+      <ul class="tick">
+        <li>의사일정 확정 → 안건 상정 → <b>제안설명</b>(집행부·발의의원)</li>
+        <li><b>전문위원 검토보고</b> → 질의·답변 → 찬반토론</li>
+        <li>필요 시 <b>축조심사·소위원회</b> 회부 → 표결</li>
+        <li>수정 필요 시 위원회 대안 또는 수정안으로 의결</li>
+        <li>의결 후 본회의 부의 · 심사보고서 제출</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2 class="sec">소관 실·국 조직 <small>문화체육관광국</small></h2>
+  <div class="tbl-wrap">
+    <table class="tbl">
+      <thead><tr id="orghead"></tr></thead>
+      <tbody id="org"></tbody>
+    </table>
+  </div>
+
+  <h2 class="sec">연간 회기 운영 <small>2026년 · 7회 117일</small></h2>
+  <div class="tbl-wrap">
+    <table class="tbl">
+      <thead><tr><th class="c">회기</th><th class="c">구분</th><th>기간</th><th class="c">일수</th><th>주요 안건</th></tr></thead>
+      <tbody id="sched"></tbody>
+    </table>
+  </div>
+  <p class="muted" style="margin-top:8px">※ 회기 일정은 의회운영위원회가 확정하는 연간 회기 운영계획에 따라 변경될 수 있다.
+    상세 준비사항은 <a href="schedule.html">회기 일정</a> 참고.</p>
+</div>
+
+<script src="assets/site.js"></script>
+<script>
+shell('committee.html');
+(async () => {
+  const C = await load('committee.json');
+  const O = await load('ordinances.json');
+  const B = await loadBudget();
+
+  const ordBy = {};
+  O.ordinances.forEach(o => ordBy[o.dept] = (ordBy[o.dept]||0)+1);
+
+  stats.innerHTML = [
+    ['위원 정수', '17<small>명 이내</small>', `현원 ${C.members.length}명 · 위원장 1 · 부위원장 2`],
+    ['임기', '2<small>년</small>', '선임된 날부터 · 전·후반기 각 2년'],
+    ['소관 자치법규', O.ordinances.length+'<small>건</small>', '母·分野母·準母 포함'],
+    ['소관 기관', C.agencies.length+'<small>개</small>', '도 실·국 1 · 공사·출연·체육단체 등'],
+  ].map(([k,v,d])=>`<div class="stat"><div class="k">${k}</div><div class="v">${v}</div><div class="d">${d}</div></div>`).join('');
+
+  fields.innerHTML = C.depts.filter(d=>d.ord>0).map(d=>
+    `<li><b>${d.name}</b> — ${d.field} <span class="muted">(조례 ${d.ord}건)</span></li>`).join('') +
+    `<li><b>전국체전추진단</b> — 전국(소년)체육대회 준비</li>
+     <li><b>남한산성세계유산센터</b> — 세계유산 남한산성 보존·관리·활용</li>`;
+
+  const cats = [...new Set(C.agencies.map(a=>a.cat))];
+  agencies.innerHTML = cats.map(c=>
+    `<li><b>${c}</b><br><span class="muted">${C.agencies.filter(a=>a.cat===c).map(a=>a.name).join(' · ')}</span></li>`).join('');
+
+  powers.innerHTML = C.powers.map(([p,l])=>
+    `<tr><td><b>${p}</b></td><td class="muted">${l}</td></tr>`).join('');
+
+  orghead.innerHTML = `<th>과·기관</th><th>주요 소관 분야</th><th>중심 母조례</th>
+      <th class="c">소관 조례</th>${B ? '<th class="n">2026 세출(천원)</th>' : ''}`;
+  org.innerHTML = C.depts.map(d=>{
+    const b = B ? (B.seul.find(x=>x.name===d.name) || {}) : null;
+    return `<tr>
+      <td><b>${d.name}</b></td>
+      <td class="muted">${d.field}</td>
+      <td class="muted" style="font-size:11.5px">${d.mother || '—'}</td>
+      <td class="c">${ordBy[d.name] ? `<a href="ordinances.html?dept=${encodeURIComponent(d.name)}">${ordBy[d.name]}</a>` : '—'}</td>
+      ${B ? `<td class="n">${b.y2026 ? fmt(b.y2026) : '—'}</td>` : ''}</tr>`;
+  }).join('') + `<tr class="total"><td>계</td><td></td><td></td>
+      <td class="c">${O.ordinances.length}</td>${B ? `<td class="n">${fmt(B.total.seul.y2026)}</td>` : ''}</tr>`;
+
+  sched.innerHTML = C.schedule.map(s=>`<tr>
+    <td class="c"><b>${s.n}</b></td>
+    <td class="c"><span class="tag ${s.type==='정례회'?'mo':'grey'}">${s.type}</span></td>
+    <td>${s.period}</td><td class="c">${s.days}일</td>
+    <td class="muted">${s.note}</td></tr>`).join('');
+})();
+</script>
+</body>
+</html>

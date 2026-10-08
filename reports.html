@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>업무보고 | 경기도의회 문화체육관광위원회</title>
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<div class="wrap">
+  <div class="page-head">
+    <h1>업무보고</h1>
+    <p class="sub">소관 실·국 및 산하기관 업무보고 · 질의 준비자료</p>
+  </div>
+
+  <div class="lead-box">
+    업무보고는 상임위원회가 소관 기관의 <b>연간 업무계획과 주요 현안</b>을 확인하는 자리다.
+    제12대 전반기 문화체육관광위원회는 원 구성 직후 문화체육관광국 7개 과와
+    경기문화재단·한국도자재단·경기콘텐츠진흥원·경기아트센터·DMZ국제다큐멘터리영화제·전국체전추진단·남한산성세계유산센터의 업무보고를 받았다.
+  </div>
+
+  <div class="grid g4" id="stats"></div>
+
+  <h2 class="sec">보고 기관별 질의 준비 <small>조례 · 예산 연계</small></h2>
+  <div class="tbl-wrap">
+    <table class="tbl">
+      <thead><tr id="tblhead"></tr></thead>
+      <tbody id="tbl"></tbody>
+    </table>
+  </div>
+
+  <h2 class="sec">과별 주요 정책현안 <small>질의 소재</small></h2>
+  <div class="grid g2">
+    <div class="card">
+      <h3 class="sub" style="margin-top:0">문화 · 예술</h3>
+      <ul class="tick">
+        <li><b>예술인 기회소득</b> 운영 성과와 대상자 선정 기준 (조례 39)</li>
+        <li><b>지역 간 문화격차</b> — 경기 북부·동부 문화기반시설 확충</li>
+        <li><b>경기문화재단·경기아트센터</b> 출연금 규모와 자체수입 구조</li>
+        <li><b>문화이용권·청년문화예술패스</b> 집행률과 사용처 편중</li>
+        <li>장르별 진흥조례(문학·서예·국악·사진) 대비 실제 사업 예산</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3 class="sub" style="margin-top:0">체육</h3>
+      <ul class="tick">
+        <li><b>전국(소년)체전 준비</b> — 추진단 예산 순증 대비 시설·운영 계획</li>
+        <li><b>공공체육시설</b> 확보율 지역 편차와 적극 개방(조례 74) 이행</li>
+        <li><b>경기도체육회·장애인체육회</b> 보조금 정산과 종목단체 지원 기준</li>
+        <li><b>체육인 기회소득</b>(81)과 체육인 복지(79)·체육복지(80) 조례 중복</li>
+        <li>반다비 체육센터(75) 건립·운영 진척도</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3 class="sub" style="margin-top:0">관광 · 콘텐츠</h3>
+      <ul class="tick">
+        <li><b>테마관광 11종 조례</b> 대비 실제 사업 추진 실적</li>
+        <li><b>경기콘텐츠진흥원</b> — 게임·웹툰·영상 지원사업 성과</li>
+        <li><b>K-컬처밸리</b>(33) 조성 사업 진행 상황</li>
+        <li><b>지역축제·작은축제</b> 중복 지원과 성과평가 체계</li>
+        <li>DMZ·평화누리길 등 경기 북부 관광자원 개발</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3 class="sub" style="margin-top:0">문화유산 · 종교</h3>
+      <ul class="tick">
+        <li><b>남한산성 세계유산</b> 보존·정비 사업(센터 세출 감소 요인)</li>
+        <li><b>국가유산기본법</b> 체제 전환에 따른 조례 정비 필요성</li>
+        <li><b>문화유산돌봄·지킴이</b> 사업 인력과 예산</li>
+        <li><b>전통사찰 보수정비·방재시스템</b> 국비 매칭 현황</li>
+        <li>한국도자재단 운영과 도자문화산업 진흥(107)</li>
+      </ul>
+    </div>
+  </div>
+
+  <div id="newSec">
+  <h2 class="sec">신규 사업 <small>2026년 본예산(안) 기준</small></h2>
+  <div class="searchbar">
+    <input type="search" id="q" placeholder="신규 사업 검색">
+    <span class="count-badge" id="cnt"></span>
+  </div>
+  <div class="tbl-wrap">
+    <table class="tbl">
+      <thead><tr><th>과·기관</th><th>세부사업명</th><th>통계목</th><th class="n">2026 예산액</th><th class="c">구분</th></tr></thead>
+      <tbody id="newp"></tbody>
+    </table>
+  </div>
+  </div>
+
+  <div class="note">
+    업무보고 자료(한글·PDF) 원본을 <code>munhwa/업무보고/</code> 폴더에 넣어주시면
+    기관별 보고 목차·주요사업·전년 대비 변동 사항을 이 페이지에 색인해 두겠다.
+  </div>
+</div>
+
+<script src="assets/site.js"></script>
+<script>
+shell('reports.html');
+let NEW = [];
+(async () => {
+  const B = await loadBudget();
+  const C = await load('committee.json');
+  const O = await load('ordinances.json');
+  const P = B ? B.projects : [];
+  NEW = P.filter(p=>p.tag.startsWith('신규')).sort((a,b)=>b.a-a.a);
+
+  const ordBy = {}; O.ordinances.forEach(o=>ordBy[o.dept]=(ordBy[o.dept]||0)+1);
+
+  const sc = [['보고 기관', (C.depts.length + C.agencies.length-1)+'<small>개</small>', '실·국 및 산하기관']];
+  if (B) sc.push(
+    ['신규 사업', NEW.length+'<small>건</small>', eokS(NEW.reduce((s,p)=>s+p.a,0))+'억원'],
+    ['일몰 사업', P.filter(p=>p.tag.startsWith('일몰')).length+'<small>건</small>', '전년 사업 종료·통합'],
+    ['사업명 변경', P.filter(p=>p.tag==='사업명변경').length+'<small>건</small>', '동일 사업 명칭 조정']);
+  else sc.push(
+    ['소관 과·기관', C.depts.length+'<small>개</small>', '문화체육관광국'],
+    ['소관 자치법규', O.ordinances.length+'<small>건</small>', '과별 조례 체계'],
+    ['산하 공공기관', (C.agencies.length-1)+'<small>개</small>', '공사·출연·체육단체 등']);
+  stats.innerHTML = sc.map(([k,v,d])=>`<div class="stat"><div class="k">${k}</div><div class="v">${v}</div><div class="d">${d}</div></div>`).join('');
+
+  tblhead.innerHTML = `<th>과·기관</th><th>주요 소관</th><th class="c">소관 조례</th>` +
+    (B ? `<th class="n">2026 세출(천원)</th><th class="n">전년 대비</th><th class="c">신규</th><th class="c">일몰</th>`
+       : `<th>중심 母조례</th>`);
+  tbl.innerHTML = C.depts.map(dep=>{
+    const r = B ? (B.seul.find(x=>x.name===dep.name) || {}) : {};
+    const d = r.y2026 ? delta(r.y2026, r.y2025) : null;
+    const n = P.filter(p=>p.dept===dep.name && p.tag.startsWith('신규')).length;
+    const u = P.filter(p=>p.dept===dep.name && p.tag.startsWith('일몰')).length;
+    return `<tr><td><b>${dep.name}</b></td><td class="muted">${dep.field||'—'}</td>
+      <td class="c">${ordBy[dep.name]?`<a href="ordinances.html?dept=${encodeURIComponent(dep.name)}">${ordBy[dep.name]}</a>`:'—'}</td>` +
+      (B ? `<td class="n">${r.y2026?fmt(r.y2026):'—'}</td><td class="n ${d?d.cls:''}">${d?d.t:'—'}</td>
+      <td class="c">${n?`<span class="tag new">${n}</span>`:'—'}</td>
+      <td class="c">${u?`<span class="tag sun">${u}</span>`:'—'}</td>`
+         : `<td class="muted" style="font-size:11.5px">${dep.mother||'—'}</td>`) + `</tr>`;
+  }).join('');
+
+  if (!B) { document.getElementById('newSec').innerHTML = BUDGET_NOTE; return; }
+  q.oninput = render; render();
+})();
+
+function render(){
+  const s = q.value.trim();
+  const list = NEW.filter(p=>!s || p.name.includes(s) || p.dept.includes(s) || p.mok.includes(s));
+  newp.innerHTML = list.length ? list.map(p=>`<tr>
+    <td class="muted">${p.dept}</td><td><b>${hl(p.name,s)}</b></td>
+    <td class="muted" style="font-size:11.5px">${p.mok}</td>
+    <td class="n">${fmt(p.a)}</td>
+    <td class="c"><span class="tag new">${p.tag}</span></td></tr>`).join('')
+    : `<tr><td colspan="5"><div class="empty">검색 결과가 없습니다.</div></td></tr>`;
+  cnt.textContent = `${list.length} / ${NEW.length}건`;
+}
+</script>
+</body>
+</html>

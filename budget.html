@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>예산안 자료 | 경기도의회 문화체육관광위원회</title>
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<div class="wrap">
+  <div class="page-head">
+    <h1>예산안 자료</h1>
+    <p class="sub">2026년도 문화체육관광국 본예산(안) · 세출 484개 사업 색인 · 출처 문화체육관광국 제출 총괄자료(상임위 심사용)</p>
+    <div class="acts">
+      <button class="btn" onclick="dl()">⬇ 검색결과 CSV</button>
+      <a class="btn" href="#projects">사업 검색으로 ↓</a>
+      <a class="btn" href="https://lofin365.go.kr" target="_blank" rel="noopener">지방재정365 ↗</a>
+    </div>
+  </div>
+
+  <div id="bodyArea">
+  <div class="grid g4" id="stats"></div>
+
+  <h2 class="sec">세출예산 구성 <small>단위 천원</small></h2>
+  <div class="grid g2">
+    <div class="card"><h3 class="sub" style="margin-top:0">과·기관별 비중</h3><div id="donut"></div></div>
+    <div class="card"><h3 class="sub" style="margin-top:0">과·기관별 세출 <span class="muted">(단위 억원)</span></h3><div id="sbars"></div></div>
+  </div>
+
+  <h2 class="sec">과·기관별 세출 상세</h2>
+  <div class="tbl-wrap">
+    <table class="tbl">
+      <thead><tr><th>과·기관</th>
+        <th class="n">2026 본예산(안)</th><th class="n">2025 본예산</th>
+        <th class="n">증감액</th><th class="n">증감률</th>
+        <th class="n">의존재원</th><th class="n">자체재원</th><th class="c">사업수</th></tr></thead>
+      <tbody id="seul"></tbody>
+    </table>
+  </div>
+
+  <h2 class="sec">세입예산 <small>단위 천원</small></h2>
+  <div class="tbl-wrap">
+    <table class="tbl">
+      <thead><tr><th>과·기관</th><th class="n">2026 본예산(안)</th><th class="n">2025 본예산</th>
+        <th class="n">증감액</th><th class="n">증감률</th></tr></thead>
+      <tbody id="sein"></tbody>
+    </table>
+  </div>
+
+  <h2 class="sec" id="projects">세출 사업 검색 <small>484건</small></h2>
+  <div class="note">
+    <b>신규</b>·<b>일몰</b>·<b>사업명변경</b>은 집행부가 제출한 총괄자료의 표기를 그대로 옮긴 것이다.
+    일몰 사업 중 2026년 예산액이 0인 건은 전년도 사업이 종료되어 목록에만 남은 경우다.
+    질의 준비 시 <b>증감률이 큰 사업</b>과 <b>신규 사업</b>을 먼저 확인하면 좋다.
+  </div>
+  <div class="searchbar">
+    <input type="search" id="q" placeholder="사업명·통계목 검색 (예: 기회소득, 체육관, 축제, 출연금)">
+    <select id="dept"><option value="">전체 과·기관</option></select>
+    <select id="tag">
+      <option value="">전체 구분</option>
+      <option value="신규">신규</option>
+      <option value="일몰">일몰</option>
+      <option value="사업명변경">사업명변경</option>
+    </select>
+    <select id="sort">
+      <option value="dept">과 순</option>
+      <option value="amt">예산액 큰 순</option>
+      <option value="up">증액 큰 순</option>
+      <option value="dn">감액 큰 순</option>
+    </select>
+    <span class="count-badge" id="cnt"></span>
+  </div>
+  <div class="tbl-wrap">
+    <table class="tbl">
+      <thead><tr><th class="c" style="width:44px">연번</th><th>과·기관</th><th>세부사업명</th>
+        <th>통계목</th><th class="n">2026(A)</th><th class="n">2025(B)</th>
+        <th class="n">증감</th><th class="c">구분</th></tr></thead>
+      <tbody id="ptbl"></tbody>
+    </table>
+  </div>
+  <p class="muted" style="margin-top:8px" id="more"></p>
+
+  </div>
+
+  <h2 class="sec">원자료</h2>
+  <div class="links">
+    <a class="localonly" href="../munhwa/예결산/2026/예산안 파일(문체국 제출)/최종/★★★ (요구자료)2026년 본예산안 총괄자료_문체국_상임위 심사용.xlsx"><b>총괄자료 (상임위 심사용)</b><span>엑셀 · 총괄/세입/세출/기금</span></a>
+    <a class="localonly" href="../munhwa/예결산/2026/예산안 파일(문체국 제출)/최종/★★(발간본)2026년 본예산안 문화체육관광국 세입세출사업명세서 1권.pdf"><b>세입세출 사업명세서 1권</b><span>발간본 PDF</span></a>
+    <a class="localonly" href="../munhwa/예결산/2026/예산안 파일(문체국 제출)/최종/★★(발간본)2026년 본예산안 문화체육관광국 세입세출사업명세서 2권.pdf"><b>세입세출 사업명세서 2권</b><span>발간본 PDF</span></a>
+    <a class="localonly" href="../munhwa/예결산/2026/예산안 파일(문체국 제출)/출연금 사업설명서/"><b>출연금 사업설명서</b><span>관광공사·문화재단·아트센터·콘텐츠진흥원·도자재단</span></a>
+    <a class="localonly" href="../munhwa/예결산/2026/예산안 파일(총괄)/★(최종 발간본)2026년도 예산안 총괄표.pdf"><b>경기도 예산안 총괄표</b><span>발간본 PDF</span></a>
+    <a class="localonly" href="../munhwa/예결산/2026/예산안 파일(총괄)/2026~2030 중기지방재정계획(발간본).pdf"><b>중기지방재정계획</b><span>2026~2030</span></a>
+  </div>
+</div>
+
+<script src="assets/site.js"></script>
+<script>
+shell('budget.html');
+let P = [], LIMIT = 200;
+
+(async () => {
+  const B = await loadBudget();
+  if (!B) {                       // 공개 주소 — 예산 자료 미포함
+    document.getElementById('bodyArea').innerHTML = BUDGET_NOTE + `
+      <div class="card" style="margin-top:14px">
+        <h3 class="sub" style="margin-top:0">이 페이지에서 볼 수 있는 것 (내 컴퓨터에서 열 때)</h3>
+        <ul class="tick">
+          <li>2026년도 문화체육관광국 <b>세출 484개 사업</b> 검색·정렬 (사업명·통계목)</li>
+          <li>과·기관별 세출/세입 상세와 전년 대비 증감</li>
+          <li>의존재원·자체재원 구성, 신규·일몰·사업명변경 표시</li>
+          <li>검색 결과 엑셀(CSV) 내려받기</li>
+        </ul>
+        <p class="muted" style="margin-top:10px">조례·위원회·소관기관 현황은 공개 주소에서도 모두 보입니다 →
+          <a href="ordinances.html">조례 현황</a> · <a href="committee.html">상임위원회</a> ·
+          <a href="executives.html">소관 실국·기관</a></p>
+      </div>`;
+    return;
+  }
+  P = B.projects;
+  const t = B.total.seul, d = delta(t.y2026, t.y2025);
+
+  stats.innerHTML = [
+    ['2026년 세출예산(안)', eokS(t.y2026)+'<small>억원</small>',
+      `<span class="${d.cls}">${d.t}</span> · ${fmt(t.y2026)}천원`, d.pct>=0?'up':'dn'],
+    ['전년 대비 증감', (t.y2026>=t.y2025?'▲':'▼')+' '+eokS(Math.abs(t.y2026-t.y2025))+'<small>억원</small>',
+      `2025년 본예산 ${eokS(t.y2025)}억원`, d.pct>=0?'up':'dn'],
+    ['자체재원', eokS(t.jache)+'<small>억원</small>',
+      `${(t.jache/t.y2026*100).toFixed(1)}% · 의존재원 ${eokS(t.uijon)}억원`, ''],
+    ['세입예산(안)', eokS(B.total.sein.y2026)+'<small>억원</small>',
+      `전년 ${eokS(B.total.sein.y2025)}억원 · <span class="${delta(B.total.sein.y2026,B.total.sein.y2025).cls}">${delta(B.total.sein.y2026,B.total.sein.y2025).t}</span>`, ''],
+  ].map(([k,v,dd,c])=>`<div class="stat ${c}"><div class="k">${k}</div><div class="v">${v}</div><div class="d">${dd}</div></div>`).join('');
+
+  const rows = [...B.seul].sort((a,b)=>b.y2026-a.y2026);
+  document.getElementById('donut').innerHTML = donut(rows.map(r=>({lb:r.name,v:r.y2026})),176);
+  document.getElementById('sbars').innerHTML = bars(rows.map(r=>({lb:r.name,v:r.y2026,vs:eokS(r.y2026)+'억'})));
+
+  const cntBy = {};
+  P.forEach(p => cntBy[p.dept] = (cntBy[p.dept]||0)+1);
+
+  seul.innerHTML = rows.map(r=>{
+    const dd = delta(r.y2026, r.y2025);
+    return `<tr><td><b>${r.name}</b></td>
+      <td class="n">${fmt(r.y2026)}</td><td class="n">${fmt(r.y2025)}</td>
+      <td class="n ${dd.cls}">${r.y2026>=r.y2025?'+':''}${fmt(r.y2026-r.y2025)}</td>
+      <td class="n ${dd.cls}">${dd.t}</td>
+      <td class="n muted">${fmt(r.uijon)}</td><td class="n muted">${fmt(r.jache)}</td>
+      <td class="c"><a href="#projects" onclick="pick('${r.name}')">${cntBy[r.name]||0}</a></td></tr>`;
+  }).join('') + `<tr class="total"><td>문화체육관광국 계</td>
+      <td class="n">${fmt(t.y2026)}</td><td class="n">${fmt(t.y2025)}</td>
+      <td class="n ${d.cls}">${fmt(t.y2026-t.y2025)}</td><td class="n ${d.cls}">${d.t}</td>
+      <td class="n">${fmt(t.uijon)}</td><td class="n">${fmt(t.jache)}</td>
+      <td class="c">${P.length}</td></tr>`;
+
+  sein.innerHTML = B.sein.map(r=>{
+    const dd = delta(r.y2026, r.y2025);
+    return `<tr><td><b>${r.name}</b></td>
+      <td class="n">${fmt(r.y2026)}</td><td class="n">${fmt(r.y2025)}</td>
+      <td class="n ${dd.cls}">${r.y2026>=r.y2025?'+':''}${fmt(r.y2026-r.y2025)}</td>
+      <td class="n ${dd.cls}">${dd.t}</td></tr>`;
+  }).join('') + `<tr class="total"><td>계</td>
+      <td class="n">${fmt(B.total.sein.y2026)}</td><td class="n">${fmt(B.total.sein.y2025)}</td>
+      <td class="n">${fmt(B.total.sein.y2026-B.total.sein.y2025)}</td>
+      <td class="n">${delta(B.total.sein.y2026,B.total.sein.y2025).t}</td></tr>`;
+
+  dept.insertAdjacentHTML('beforeend', rows.map(r=>`<option>${r.name}</option>`).join(''));
+  q.oninput = () => { LIMIT = 200; render(); };
+  dept.onchange = tag.onchange = sort.onchange = () => { LIMIT = 200; render(); };
+  render();
+})();
+
+function pick(d){ dept.value = d; LIMIT = 200; render(); }
+
+function filtered(){
+  const s = q.value.trim(), d = dept.value, tg = tag.value;
+  let list = P.filter(p =>
+    (!d || p.dept === d) &&
+    (!tg || p.tag.startsWith(tg)) &&
+    (!s || p.name.includes(s) || p.mok.includes(s) || p.bugi.includes(s)));
+  const v = sort.value;
+  if (v === 'amt') list = [...list].sort((a,b)=>b.a-a.a);
+  else if (v === 'up') list = [...list].sort((a,b)=>(b.a-b.b)-(a.a-a.b));
+  else if (v === 'dn') list = [...list].sort((a,b)=>(a.a-a.b)-(b.a-b.b));
+  return list;
+}
+
+const tcls = t => t.startsWith('신규') ? 'new' : t.startsWith('일몰') ? 'sun' : t ? 'chg' : '';
+
+function render(){
+  const s = q.value.trim(), list = filtered(), show = list.slice(0, LIMIT);
+  ptbl.innerHTML = show.length ? show.map((p,i)=>{
+    const dd = p.b ? delta(p.a, p.b) : {t: p.a?'순증':'—', cls: p.a?'up-t':''};
+    return `<tr>
+      <td class="c muted">${i+1}</td>
+      <td class="muted">${p.dept}</td>
+      <td><b>${hl(p.name, s)}</b>${p.bugi && p.bugi!==p.name ? `<br><span class="muted" style="font-size:11px">${hl(p.bugi, s)}</span>` : ''}</td>
+      <td class="muted" style="font-size:11.5px">${hl(p.mok, s)}</td>
+      <td class="n">${fmt(p.a)}</td>
+      <td class="n muted">${fmt(p.b)}</td>
+      <td class="n ${dd.cls}">${dd.t}</td>
+      <td class="c">${p.tag ? `<span class="tag ${tcls(p.tag)}">${p.tag}</span>` : ''}</td></tr>`;
+  }).join('') : `<tr><td colspan="8"><div class="empty">검색 결과가 없습니다.</div></td></tr>`;
+  cnt.textContent = `${list.length} / ${P.length}건`;
+  more.innerHTML = list.length > LIMIT
+    ? `${LIMIT}건까지 표시했습니다. <a href="#" onclick="LIMIT+=300;render();return false">더 보기 (+300)</a> · 전체는 CSV로 내려받으세요.`
+    : `단위 천원. 2026(A)는 집행부 제출 본예산(안), 2025(B)는 전년 본예산액이다.`;
+}
+
+function dl(){
+  toCSV(['과·기관','세부사업명','부기명','통계목','2026 본예산(안)','2025 본예산','증감','구분'],
+    filtered().map(p=>[p.dept,p.name,p.bugi,p.mok,p.a,p.b,p.a-p.b,p.tag]),
+    '문체국_2026본예산안_세출사업.csv');
+}
+</script>
+</body>
+</html>

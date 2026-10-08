@@ -5,6 +5,20 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>의원 현황 | 경기도의회 문화체육관광위원회</title>
 <link rel="stylesheet" href="assets/site.css">
+<style>
+  .mcard{display:flex;gap:13px;align-items:flex-start}
+  .mcard .body{flex:1;min-width:0}
+  .photo{width:72px;height:94px;border-radius:9px;object-fit:cover;object-position:top center;
+    background:#eef3f8;flex-shrink:0;border:1px solid var(--line);display:block}
+  .photo.ph{display:flex;align-items:center;justify-content:center;
+    font-size:26px;font-weight:800;color:#8fb4d0;background:linear-gradient(160deg,#f2f7fb,#e3edf5)}
+  .mcard.lead .photo{width:84px;height:110px;border-color:var(--gb)}
+  .thumb{width:32px;height:42px;border-radius:5px;object-fit:cover;object-position:top center;
+    background:#eef3f8;border:1px solid var(--line);display:block}
+  .thumb.ph{display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#8fb4d0}
+  table.tbl td.pc{width:44px;padding:5px 8px}
+  @media print{.photo,.thumb{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+</style>
 </head>
 <body>
 <div class="wrap">
@@ -20,8 +34,9 @@
   <div class="grid g4" id="stats"></div>
 
   <div class="note">
-    연락처·사무실·생년월일 등 개인정보는 이 페이지에 싣지 않았다. 필요한 항목은 경기도의회 누리집 의원 개별 페이지에서 확인하고,
-    담당 의원의 상세 프로필은 <b>의원 활동관리</b> 시스템에 등록해 관리한다.
+    사진과 의원 개인 페이지는 <b>경기도의회 누리집의 자료를 그대로 연결</b>한 것이다(이 사이트에 복제해 두지 않았다).
+    따라서 의회 누리집에서 사진이 바뀌면 이 페이지에도 그대로 반영되며, 인터넷에 연결되어 있어야 보인다.
+    연락처·생년월일 등 개인정보는 싣지 않았다. 담당 의원의 상세 자료는 <b>의원 활동관리</b> 시스템에서 관리한다.
   </div>
 
   <h2 class="sec">위원장단</h2>
@@ -38,7 +53,8 @@
   <h2 class="sec">전체 명단</h2>
   <div class="tbl-wrap">
     <table class="tbl">
-      <thead><tr><th class="c">연번</th><th class="c">직위</th><th>성명</th><th>선거구</th><th>정당</th><th class="c">구분</th><th>담당 자료</th></tr></thead>
+      <thead><tr><th class="c">연번</th><th class="c">사진</th><th class="c">직위</th><th>성명</th>
+        <th>선거구</th><th>정당</th><th class="c">구분</th><th>담당 자료</th></tr></thead>
       <tbody id="tbl"></tbody>
     </table>
   </div>
@@ -50,18 +66,28 @@
 <script src="assets/site.js"></script>
 <script>
 shell('members.html');
-let M = [];
-// 정책지원관이 개별 자료를 만들어 둔 의원
+let M = [], PB = '', MB = '';
+// 정책지원관이 개별 자료를 만들어 둔 의원 (내 컴퓨터에서만 열림)
 const OWN = {
   '전예슬': '../의원 자료/전예슬_의원_자료/index.html',
   '한규찬': '../의원 자료/한규찬_의원_자료/한규찬_의원_기초자료.html',
 };
 
 const pcls = p => p === '더불어민주당' ? 'dem' : (p === '국민의힘' ? 'ppp' : 'grey');
+const photoURL = m => m.photo ? PB + encodeURIComponent(m.photo + '_org^jpg') : '';
+const pageURL  = m => m.blog  ? MB + m.blog + '/11' : '';
+
+// 사진이 없거나 못 불러오면 성(姓) 한 글자 자리표시로 대체
+function img(m, cls){
+  const u = photoURL(m);
+  if (!u) return `<div class="${cls} ph">${m.name[0]}</div>`;
+  return `<img class="${cls}" src="${u}" alt="${m.name} 의원" loading="lazy"
+    onerror="this.outerHTML='&lt;div class=\\'${cls} ph\\'&gt;${m.name[0]}&lt;/div&gt;'">`;
+}
 
 (async () => {
   const C = await load('committee.json');
-  M = C.members;
+  M = C.members; PB = C.photoBase || ''; MB = C.memberPageBase || '';
 
   const 민주 = M.filter(m=>m.party==='더불어민주당').length;
   const 지역구 = M.filter(m=>m.type==='지역구').length;
@@ -81,32 +107,48 @@ const pcls = p => p === '더불어민주당' ? 'dem' : (p === '국민의힘' ? '
 
   tbl.innerHTML = M.map((m,i)=>`<tr>
     <td class="c">${i+1}</td>
+    <td class="pc">${img(m,'thumb')}</td>
     <td class="c">${m.role==='위원' ? '위원' : `<b style="color:var(--gd)">${m.role}</b>`}</td>
-    <td><b>${m.name}</b></td>
+    <td><b>${pageURL(m) ? `<a href="${pageURL(m)}" target="_blank" rel="noopener">${m.name}</a>` : m.name}</b></td>
     <td>${m.district}</td>
     <td><span class="tag ${pcls(m.party)}">${m.party}</span></td>
     <td class="c muted">${m.type}</td>
-    <td>${OWN[m.name] ? `<a href="${OWN[m.name]}">자료 열기 ↗</a>` : '<span class="muted">—</span>'}</td>
+    <td>${OWN[m.name] ? `<a class="ownlink" href="${OWN[m.name]}">자료 열기 ↗</a>` : '<span class="muted">—</span>'}</td>
   </tr>`).join('');
 
   own.innerHTML = Object.entries(OWN).map(([n,u])=>{
     const m = M.find(x=>x.name===n) || {};
-    return `<a href="${u}"><b>${n} 의원</b><span>${m.district||''} · 공약·조례·의정활동 자료</span></a>`;
-  }).join('') + `<a href="../의원 활동관리/index.html"><b>의원 활동관리</b><span>활동기록·조례·공약 통합 관리</span></a>
-   <a href="../신임의원 지원자료/index.html"><b>신임의원 브리핑</b><span>문체위 의정활동 안내</span></a>`;
+    return `<a class="localonly" href="${u}"><b>${n} 의원</b><span>${m.district||''} · 공약·조례·의정활동 자료</span></a>`;
+  }).join('') + `<a class="localonly" href="../의원 활동관리/index.html"><b>의원 활동관리</b><span>활동기록·조례·공약 통합 관리</span></a>
+   <a class="localonly" href="../신임의원 지원자료/index.html"><b>신임의원 브리핑</b><span>문체위 의정활동 안내</span></a>`;
+
+  // 공개 주소에서는 내 컴퓨터 전용 링크를 비활성 표시 (shell 실행 뒤 그려진 것들)
+  if (ONLINE) {
+    document.querySelectorAll('#own a.localonly').forEach(a=>{
+      a.classList.add('off'); a.removeAttribute('href');
+      a.insertAdjacentHTML('beforeend','<em>내 컴퓨터에서만 열림</em>');
+    });
+    document.querySelectorAll('a.ownlink').forEach(a=>{
+      a.replaceWith(Object.assign(document.createElement('span'),
+        {className:'muted', textContent:'내 컴퓨터에서만'}));
+    });
+  }
 
   render();
   q.oninput = party.onchange = render;
 })();
 
 function card(m){
+  const page = pageURL(m);
   return `<div class="mcard ${m.role!=='위원'?'lead':''}">
-    <div class="role">${m.role}</div>
-    <div class="nm">${m.name}</div>
-    <div class="meta">
-      <span class="tag ${pcls(m.party)}">${m.party}</span>
-      <span>${m.district}</span>
-      ${OWN[m.name] ? `<a href="${OWN[m.name]}" style="margin-left:auto;font-weight:700">자료 ↗</a>` : ''}
+    ${img(m,'photo')}
+    <div class="body">
+      <div class="role">${m.role}</div>
+      <div class="nm">${page ? `<a href="${page}" target="_blank" rel="noopener">${m.name}</a>` : m.name}</div>
+      <div class="meta">
+        <span class="tag ${pcls(m.party)}">${m.party}</span>
+        <span>${m.district}</span>
+      </div>
     </div></div>`;
 }
 
@@ -121,8 +163,8 @@ function render(){
 }
 
 function dl(){
-  toCSV(['연번','직위','성명','선거구','정당','구분'],
-    M.map((m,i)=>[i+1,m.role,m.name,m.district,m.party,m.type]),
+  toCSV(['연번','직위','성명','선거구','정당','구분','의원 개인페이지'],
+    M.map((m,i)=>[i+1,m.role,m.name,m.district,m.party,m.type,pageURL(m)]),
     '문화체육관광위원회_위원명단.csv');
 }
 </script>

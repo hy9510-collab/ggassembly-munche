@@ -153,3 +153,62 @@ function hideBudgetBlocks(...sels){
     el.remove();
   }));
 }
+
+/* ── 툴팁 ──
+   data-tip 속성이 있는 요소에 마우스를 올리거나(데스크톱),
+   누르면(모바일·터치) 설명을 띄운다. 화면 밖으로 나가지 않게 위치를 잡는다. */
+let _tipEl = null;
+function initTips(){
+  if (!_tipEl) {
+    _tipEl = document.createElement('div');
+    _tipEl.className = 'tip';
+    document.body.appendChild(_tipEl);
+  }
+  const show = el => {
+    const t = el.getAttribute('data-tip');
+    if (!t) return;
+    _tipEl.innerHTML = t;
+    _tipEl.classList.add('on');
+    const r = el.getBoundingClientRect();
+    const VW = innerWidth  || document.documentElement.clientWidth;
+    const VH = innerHeight || document.documentElement.clientHeight;
+    const w = _tipEl.offsetWidth, h = _tipEl.offsetHeight, pad = 10;
+    let x = r.left + r.width/2 - w/2;
+    x = Math.max(pad, Math.min(x, VW - w - pad));
+    let y = r.top - h - 9;                           // 기본은 위쪽
+    if (y < pad) y = r.bottom + 9;                   // 위가 좁으면 아래로
+    if (y + h > VH - pad) y = Math.max(pad, VH - h - pad);  // 아래도 좁으면 화면 안으로
+    _tipEl.style.left = (x + scrollX) + 'px';
+    _tipEl.style.top  = (y + scrollY) + 'px';
+  };
+  const hide = () => _tipEl.classList.remove('on');
+
+  document.addEventListener('pointerover', e => {
+    const el = e.target.closest('[data-tip]');
+    if (el) show(el); else if (!e.target.closest('.tip')) hide();
+  });
+  document.addEventListener('pointerdown', e => {
+    const el = e.target.closest('[data-tip]');
+    if (el) { e.preventDefault(); show(el); } else hide();
+  });
+  document.addEventListener('focusin', e => {
+    const el = e.target.closest('[data-tip]');
+    if (el) show(el);
+  });
+  addEventListener('scroll', hide, {passive:true});
+  addEventListener('resize', hide);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') hide(); });
+}
+
+/* 중복 조례의 툴팁 문구를 만든다. ords = 전체 조례 배열 */
+function dupTip(o, ords){
+  if (!o.dup) return '';
+  const nm = n => { const x = ords.find(v=>v.no===n); return x ? `${n}. ${x.name}` : `${n}`; };
+  const partners = (o.dupWith||[]).length
+    ? `<b>겹치는 조례</b><br>${o.dupWith.map(n=>'· '+esc(nm(n))).join('<br>')}`
+    : '';
+  const rel = (o.dupRel||[]).length
+    ? `<br><b>함께 볼 조례</b><br>${o.dupRel.map(n=>'· '+esc(nm(n))).join('<br>')}` : '';
+  return `<em>${esc(o.dupGroup||'중복 검토')}</em>${esc(o.dupWhy||'')}` +
+         (partners ? `<hr>${partners}` : '') + rel;
+}

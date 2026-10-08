@@ -57,6 +57,7 @@
   <h2 class="sec">Ⅱ. 과별 주제군 관계도 <small>母조례 ↔ 개별조례 ↔ 상위법</small></h2>
   <div class="note">
     빨간 테두리 <span class="chip dup">항목</span>은 다른 조례와 대상·사업이 <b>중복·유사</b>하여 통폐합·역할분담 검토가 필요한 조례다.
+    <b>칩에 마우스를 올리면(휴대폰은 누르면) 어떤 조례와 왜 겹치는지</b> 나온다.
     조례명을 누르면 국가법령정보센터 자치법규 검색으로 연결된다.
   </div>
   <div id="trees"></div>
@@ -101,7 +102,7 @@ const lawURL = n => 'https://www.law.go.kr/LSW/ordinScListR.do?query=' + encodeU
         <div class="branch">
           <div class="bh">${g.group} <span class="tag grey">${g.ids.length}</span></div>
           <div class="chips">${g.ids.map(n=>{const o=by(n);
-            return `<span class="chip ${o.dup?'dup':''}"><a href="${lawURL(o.name)}" target="_blank" rel="noopener">${n} ${o.name}</a></span>`;
+            return `<span class="chip ${o.dup?'dup':''}"${o.dup?` tabindex="0" data-tip="${esc(dupTip(o,ORD))}"`:''}><a href="${lawURL(o.name)}" target="_blank" rel="noopener">${n} ${o.name}</a></span>`;
           }).join('')}</div>
           ${g.note ? `<div class="note">${g.note}</div>` : ''}
         </div>`).join('')}
@@ -112,10 +113,17 @@ const lawURL = n => 'https://www.law.go.kr/LSW/ordinScListR.do?query=' + encodeU
   review.innerHTML = `
     <div class="card">
       <h3 class="sub" style="margin-top:0">중복·통폐합 검토 <span class="tag dup">${dup.length}건</span></h3>
-      <p class="muted" style="margin-bottom:8px">대상·사업이 다른 조례와 겹쳐 통폐합 또는 역할분담 정리가 필요한 조례.</p>
-      <ul class="tick">${dup.map(o=>
-        `<li><a href="${lawURL(o.name)}" target="_blank" rel="noopener">${o.no}. ${o.name}</a>
-         <span class="muted">— ${o.dept} · ${o.group}</span></li>`).join('') || '<li class="muted">해당 없음</li>'}</ul>
+      <p class="muted" style="margin-bottom:8px">대상·사업이 다른 조례와 겹쳐 통폐합 또는 역할분담 정리가 필요한 조례.
+        중복군별로 묶었다.</p>
+      ${(()=>{const gs={};dup.forEach(o=>(gs[o.dupGroup||'기타']=gs[o.dupGroup||'기타']||[]).push(o));
+        return Object.entries(gs).map(([name,list])=>`
+          <div style="margin:10px 0 12px">
+            <div style="font-size:12.5px;font-weight:700;color:var(--navy)">${name}
+              <span class="tag dup">${list.length}건</span></div>
+            <div class="chips" style="margin:4px 0">${list.map(o=>
+              `<span class="chip dup"><a href="${lawURL(o.name)}" target="_blank" rel="noopener">${o.no} ${o.name}</a></span>`).join('')}</div>
+            <div class="muted" style="font-size:11.8px">${list[0].dupWhy||''}</div>
+          </div>`).join('');})()}
     </div>
     <div class="card">
       <h3 class="sub" style="margin-top:0">소관 경합 <span class="tag comp">${comp.length}건</span></h3>
@@ -142,6 +150,7 @@ const lawURL = n => 'https://www.law.go.kr/LSW/ordinScListR.do?query=' + encodeU
         <li><b>기관 설립 조례</b> — 37·61·78·98·109 등은 소관 기관 예산·행감과 함께 검토</li>
       </ul>
     </div>`;
+  initTips();
 })();
 </script>
 </body>

@@ -23,7 +23,8 @@
   <div class="note">
     조례명을 누르면 <b>국가법령정보센터 자치법규 검색</b>으로 연결되어 원문·연혁을 확인할 수 있다.
     <b>母</b>는 해당 분야 조례군을 총괄하는 기본조례, <b>準母·分野母</b>는 한 과 안에서 분야별로 기본계획·위원회를 두는 조례다.
-    <span class="tag dup">중복</span>은 다른 조례와 대상·사업이 겹쳐 통폐합·역할분담 검토가 필요한 건, <span class="tag comp">경합</span>은 타 위원회와 소관이 겹치는 건이다.
+    <span class="tag dup">중복</span>은 다른 조례와 대상·사업이 겹쳐 통폐합·역할분담 검토가 필요한 건으로,
+    <b>표시에 마우스를 올리면(휴대폰은 누르면) 어떤 조례와 왜 겹치는지</b> 나온다. <span class="tag comp">경합</span>은 타 위원회와 소관이 겹치는 건이다.
   </div>
 
   <h2 class="sec">과별 분포</h2>
@@ -101,7 +102,7 @@ const lawURL = n => 'https://www.law.go.kr/LSW/ordinScListR.do?query=' + encodeU
             <span class="tag grey">${g.ids.length}</span></div>
           <div class="chips">${g.ids.map(n=>{
             const o = ORD.find(x=>x.no===n);
-            return `<span class="chip ${o.dup?'dup':''}"><a href="${lawURL(o.name)}" target="_blank" rel="noopener">${n} ${o.name}</a></span>`;
+            return `<span class="chip ${o.dup?'dup':''}"${o.dup?` tabindex="0" data-tip="${esc(dupTip(o,ORD))}"`:''}><a href="${lawURL(o.name)}" target="_blank" rel="noopener">${n} ${o.name}</a></span>`;
           }).join('')}</div>
           ${g.note ? `<div class="muted" style="margin-top:4px;font-style:italic">${g.note}</div>` : ''}
         </div>`).join('')}
@@ -140,14 +141,17 @@ function render(){
     <td>${hl(o.dept, s)}</td>
     <td class="muted">${o.group}</td>
     <td class="muted" style="font-size:11.5px">${o.law}</td>
-    <td class="c">${o.dup?'<span class="tag dup">중복</span>':''}${o.comp?'<span class="tag comp">경합</span>':''}</td>
+    <td class="c">${o.dup?`<span class="tag dup" tabindex="0" data-tip="${esc(dupTip(o,ORD))}">중복</span>`:''}${o.comp?'<span class="tag comp">경합</span>':''}</td>
   </tr>`).join('') : `<tr><td colspan="6"><div class="empty">검색 결과가 없습니다.</div></td></tr>`;
   cnt.textContent = `${list.length} / ${ORD.length}건`;
 }
 
+initTips();
+
 function dl(){
-  toCSV(['번호','조례명','과','주제군','상위 법령','구분','중복검토','소관경합'],
-    filtered().map(o=>[o.no,o.name,o.dept,o.group,o.law,o.role||(o.rule?'시행규칙':''),o.dup?'Y':'',o.comp?'Y':'']),
+  toCSV(['번호','조례명','과','주제군','상위 법령','구분','중복검토','중복군','겹치는 조례','중복 사유','소관경합'],
+    filtered().map(o=>[o.no,o.name,o.dept,o.group,o.law,o.role||(o.rule?'시행규칙':''),
+      o.dup?'Y':'', o.dupGroup||'', (o.dupWith||[]).join('·'), o.dupWhy||'', o.comp?'Y':'']),
     '문체위_소관조례목록.csv');
 }
 </script>

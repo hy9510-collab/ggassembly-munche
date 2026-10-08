@@ -5,105 +5,135 @@
    "role": "위원장",
    "party": "더불어민주당",
    "district": "김포2",
-   "type": "지역구"
+   "type": "지역구",
+   "photo": "roots50",
+   "blog": "10070"
   },
   {
    "name": "이진형",
    "role": "부위원장",
    "party": "더불어민주당",
    "district": "화성7",
-   "type": "지역구"
+   "type": "지역구",
+   "photo": "eanlee73",
+   "blog": "11403"
   },
   {
    "name": "이오수",
    "role": "부위원장",
    "party": "국민의힘",
    "district": "수원9",
-   "type": "지역구"
+   "type": "지역구",
+   "photo": "eos-mylove2",
+   "blog": "11203"
   },
   {
    "name": "김승기",
    "role": "위원",
    "party": "더불어민주당",
    "district": "남양주3",
-   "type": "지역구"
+   "type": "지역구",
+   "photo": "0242ne",
+   "blog": "12031"
   },
   {
    "name": "안시현",
    "role": "위원",
    "party": "더불어민주당",
    "district": "동두천1",
-   "type": "지역구"
+   "type": "지역구",
+   "photo": "ash0730",
+   "blog": "12073"
   },
   {
    "name": "이미정",
    "role": "위원",
    "party": "더불어민주당",
    "district": "비례대표",
-   "type": "비례"
+   "type": "비례",
+   "photo": "liveinfreelee",
+   "blog": "12109"
   },
   {
    "name": "이병숙",
    "role": "위원",
    "party": "더불어민주당",
    "district": "수원12",
-   "type": "지역구"
+   "type": "지역구",
+   "photo": "byoung2001",
+   "blog": "11002"
   },
   {
    "name": "이종춘",
    "role": "위원",
    "party": "더불어민주당",
    "district": "파주5",
-   "type": "지역구"
+   "type": "지역구",
+   "photo": "jc3371",
+   "blog": "12053"
   },
   {
    "name": "이지혜",
    "role": "위원",
    "party": "국민의힘",
    "district": "비례대표",
-   "type": "비례"
+   "type": "비례",
+   "photo": "ljhey-official",
+   "blog": "12301"
   },
   {
    "name": "전예슬",
    "role": "위원",
    "party": "더불어민주당",
    "district": "오산2",
-   "type": "지역구"
+   "type": "지역구",
+   "photo": "o_with_seul",
+   "blog": "12069"
   },
   {
    "name": "채명신",
    "role": "위원",
    "party": "더불어민주당",
    "district": "용인5",
-   "type": "지역구"
+   "type": "지역구",
+   "photo": "cms298099",
+   "blog": "12009"
   },
   {
    "name": "최규진",
    "role": "위원",
    "party": "더불어민주당",
    "district": "고양4",
-   "type": "지역구"
+   "type": "지역구",
+   "photo": "softckj",
+   "blog": "12014"
   },
   {
    "name": "최성운",
    "role": "위원",
    "party": "더불어민주당",
    "district": "부천5",
-   "type": "지역구"
+   "type": "지역구",
+   "photo": "csu8888",
+   "blog": "12027"
   },
   {
    "name": "한규찬",
    "role": "위원",
    "party": "더불어민주당",
    "district": "평택4",
-   "type": "지역구"
+   "type": "지역구",
+   "photo": "slow112",
+   "blog": "12041"
   },
   {
    "name": "황은화",
    "role": "위원",
    "party": "더불어민주당",
    "district": "안산7",
-   "type": "지역구"
+   "type": "지역구",
+   "photo": "knp514517",
+   "blog": "12037"
   }
  ],
  "agencies": [
@@ -337,5 +367,7 @@
    "소관 기관 출석·답변 요구",
    "「지방자치법」 제51조"
   ]
- ]
+ ],
+ "photoBase": "https://www.ggc.go.kr/site/main/gwstorage/PhotoPath/",
+ "memberPageBase": "https://www.ggc.go.kr/site/lwmkr/blog/"
 }
